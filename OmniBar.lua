@@ -24,7 +24,7 @@ OmniBarDB = OmniBarDB or {
 
 local bars, active, _ = {}, {}
 
-local MAX_INTERRUPT_BARS = 40
+local MAX_OMNI_BARS = 30
 
 for spellID,_ in pairs(abilities) do
 	abilities[spellID].icon = select(3, GetSpellInfo(spellID))
@@ -58,7 +58,7 @@ function OmniBar:ADDON_LOADED(addon)
 		OmniBar:UnregisterEvent("ADDON_LOADED")
 
 		-- Create the bars
-		for i = 1, MAX_INTERRUPT_BARS do
+		for i = 1, MAX_OMNI_BARS do
 			local f = CreateFrame("Frame", "OmniBar"..i)
 			f:SetScript("OnMouseDown", function(self,button)
 				if button == "LeftButton" and not OmniBarDB.locked then
@@ -120,7 +120,7 @@ end
 
 function OmniBar_Hide()
 	-- Hide all the bars
-	for i = 1, MAX_INTERRUPT_BARS do
+	for i = 1, MAX_OMNI_BARS do
 		bars[i]:Hide()
 	end
 	OmniBar.test = nil
@@ -133,7 +133,7 @@ function OmniBar_Show(spellID)
 	-- Try to find a free bar
 	while bars[i] and bars[i]:IsVisible() do
 		i = i + 1
-		if i > MAX_INTERRUPT_BARS then return end
+		if i > MAX_OMNI_BARS then return end
 	end
 
 	bars[i].icon:SetTexture(abilities[spellID].icon)
@@ -175,7 +175,7 @@ SlashCmdList.OmniBar = function(msg)
 		if size and size > 0 then
 			DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: Size set to " .. size)
 			if size ~= OmniBarDB.size then
-				for i = 1, MAX_INTERRUPT_BARS do
+				for i = 1, MAX_OMNI_BARS do
 					bars[i]:SetSize(size, size)
 				end
 			end
@@ -192,7 +192,7 @@ SlashCmdList.OmniBar = function(msg)
 
 	elseif cmd == "spiral" then
 		OmniBarDB.spiral = not OmniBarDB.spiral
-		for i = 1, MAX_INTERRUPT_BARS do
+		for i = 1, MAX_OMNI_BARS do
 			bars[i].cooldown:SetDrawSwipe(OmniBarDB.spiral)
 		end
 		local status = OmniBarDB.spiral and "enabled" or "disabled"
