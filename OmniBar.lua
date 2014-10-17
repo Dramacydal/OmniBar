@@ -20,6 +20,7 @@ OmniBarDB = OmniBarDB or {
 	size   = 40,
 	locked = false,
 	spiral = true,
+	center = false,
 }
 
 local bars, active, _ = {}, {}
@@ -38,7 +39,10 @@ OmniBar:SetPoint("CENTER")
 OmniBar:SetClampedToScreen(true)
 OmniBar:SetMovable(true)
 OmniBar:RegisterForDrag("LeftButton")
-OmniBar:SetScript("OnDragStart", OmniBar.StartMoving)
+OmniBar:SetScript("OnDragStart", function(self)
+	OmniBar_Center()
+	OmniBar:StartMoving()
+end)
 OmniBar:SetScript("OnDragStop", OmniBar.StopMovingOrSizing)
 OmniBar:EnableMouse(true)
 OmniBar.text = OmniBar:CreateFontString(nil, "ARTWORK")
@@ -62,6 +66,7 @@ function OmniBar:ADDON_LOADED(addon)
 			local f = CreateFrame("Frame", "OmniBar"..i)
 			f:SetScript("OnMouseDown", function(self,button)
 				if button == "LeftButton" and not OmniBarDB.locked then
+					OmniBar_Center()
 					OmniBar:StartMoving()
 				end
 			end)
@@ -118,6 +123,13 @@ function OmniBar:PLAYER_ENTERING_WORLD()
 	OmniBar_Hide()
 end
 
+function OmniBar_Center()
+	local clamp
+	clamp = OmniBarDB.center and (OmniBar:GetWidth() - UIParent:GetWidth() * UIParent:GetScale())/2 or 0
+	OmniBar:SetClampRectInsets(clamp, -clamp, 0, 0)
+end
+OmniBar_Center()
+
 function OmniBar_Hide()
 	-- Hide all the bars
 	for i = 1, MAX_OMNI_BARS do
@@ -167,6 +179,9 @@ SlashCmdList.OmniBar = function(msg)
 	local cmd, arg1 = string.split(" ", string.lower(msg))
 
 	if cmd == "center" then
+		OmniBarDB.center = not OmniBarDB.center
+		local status = OmniBarDB.center and "enabled" or "disabled"
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: Center " .. status)
 		local y = select(5, OmniBar:GetPoint())
 		OmniBar:SetPoint("CENTER", 0, y)
 
