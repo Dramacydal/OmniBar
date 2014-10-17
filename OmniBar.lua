@@ -137,10 +137,9 @@ function OmniBar_Show(spellID)
 	end
 
 	bars[i].icon:SetTexture(abilities[spellID].icon)
+	table.insert(active, bars[i])
 	bars[i].cooldown:SetCooldown(GetTime(), abilities[spellID].duration)
 	bars[i]:Show()
-	table.insert(active, bars[i])
-	OmniBar_Position()
 end
 
 function OmniBar_Position()
@@ -150,6 +149,7 @@ function OmniBar_Position()
 		else
 			OmniBar:Show()
 		end
+		OmniBar.test = nil
 		return
 	end
 	for i = 1, #active do
