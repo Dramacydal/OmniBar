@@ -39,7 +39,7 @@ OmniBar:SetPoint("CENTER")
 OmniBar:SetClampedToScreen(true)
 OmniBar:SetMovable(true)
 OmniBar:RegisterForDrag("LeftButton")
-OmniBar:SetScript("OnDragStart", function(self)
+OmniBar:SetScript("OnDragStart", function()
 	OmniBar_Center()
 	OmniBar:StartMoving()
 end)
@@ -64,13 +64,13 @@ function OmniBar:ADDON_LOADED(addon)
 		-- Create the bars
 		for i = 1, MAX_OMNI_BARS do
 			local f = CreateFrame("Frame", "OmniBar"..i)
-			f:SetScript("OnMouseDown", function(self,button)
+			f:SetScript("OnMouseDown", function(self, button)
 				if button == "LeftButton" and not OmniBarDB.locked then
 					OmniBar_Center()
 					OmniBar:StartMoving()
 				end
 			end)
-			f:SetScript("OnMouseUp", function(self,button)
+			f:SetScript("OnMouseUp", function(self, button)
 				if button == "LeftButton" and not OmniBarDB.locked then
 					OmniBar:StopMovingOrSizing()
 				end
@@ -81,7 +81,9 @@ function OmniBar:ADDON_LOADED(addon)
 			f.icon:SetAllPoints()
 			f.cooldown = CreateFrame("Cooldown", nil, f, "CooldownFrameTemplate")
 			f.cooldown:SetAllPoints()
+			f.cooldown:SetReverse(true)
 			f.cooldown:SetDrawEdge(false)
+
 			if not OmniBarDB.spiral then
 				f.cooldown:SetDrawSwipe(false)
 			end
@@ -124,8 +126,7 @@ function OmniBar:PLAYER_ENTERING_WORLD()
 end
 
 function OmniBar_Center()
-	local clamp
-	clamp = OmniBarDB.center and (OmniBar:GetWidth() - UIParent:GetWidth() * UIParent:GetScale())/2 or 0
+	local clamp = OmniBarDB.center and (OmniBar:GetWidth() - UIParent:GetWidth() * UIParent:GetScale())/2 or 0
 	OmniBar:SetClampRectInsets(clamp, -clamp, 0, 0)
 end
 OmniBar_Center()
@@ -151,6 +152,7 @@ function OmniBar_Show(spellID)
 	bars[i].icon:SetTexture(abilities[spellID].icon)
 	table.insert(active, bars[i])
 	bars[i].cooldown:SetCooldown(GetTime(), abilities[spellID].duration)
+	bars[i].cooldown:SetSwipeColor(0, 0, 0, 0.6)
 	bars[i]:Show()
 end
 
