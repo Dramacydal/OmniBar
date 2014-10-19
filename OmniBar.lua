@@ -14,16 +14,23 @@ local abilities = {
 	[78675]  = { duration = 60 }, -- Solar Beam
 	[15487]  = { duration = 45 }, -- Silence
 	[41084]  = { duration = 24 }, -- Silencing Shot
+	[115781] = { duration = 24 }, -- Optical Blast
+	[147362] = { duration = 24 }, -- Counter Shot
 }
 
 OmniBarDB = OmniBarDB or {
-	size   = 40,
-	locked = false,
-	spiral = true,
-	center = false,
+	size            = 40,
+	locked          = false,
+	spiral          = true,
+	center          = false,
+	dim             = true,
+	noborder        = false,
+	noCooldownCount = false,
 }
 
 local bars, active, _ = {}, {}
+
+OMNI_BAR_DIM = 0.45
 
 local MAX_OMNI_BARS = 30
 
@@ -43,6 +50,7 @@ OmniBar:SetScript("OnDragStart", function()
 	OmniBar_Center()
 	OmniBar:StartMoving()
 end)
+
 OmniBar:SetScript("OnDragStop", OmniBar.StopMovingOrSizing)
 OmniBar:EnableMouse(true)
 OmniBar.text = OmniBar:CreateFontString(nil, "ARTWORK")
@@ -79,8 +87,16 @@ function OmniBar:ADDON_LOADED(addon)
 			f:SetSize(OmniBarDB.size, OmniBarDB.size)
 			f.icon = f:CreateTexture()
 			f.icon:SetAllPoints()
-			f.cooldown = CreateFrame("Cooldown", nil, f, "CooldownFrameTemplate")
+			f.cooldown = CreateFrame("Cooldown", "OmniBar"..i.."Cooldown", f, "CooldownFrameTemplate")
 			f.cooldown:SetAllPoints()
+
+			if OmniBarDB.noborder then
+				f.icon:SetTexCoord(0.07, 0.9, 0.07, 0.9)
+			end
+			if OmniBarDB.noCooldownCount then
+				f.cooldown:SetHideCountdownNumbers(true)
+				f.cooldown.noCooldownCount = true
+			end
 			f.cooldown:SetReverse(true)
 			f.cooldown:SetDrawEdge(false)
 
@@ -89,16 +105,21 @@ function OmniBar:ADDON_LOADED(addon)
 			end
 			f.cooldown:SetScript("OnHide", function(self)
 				local bar = self:GetParent()
-				bar:Hide()
-				for i = 1, #active do
-					if active[i] == bar then
-						OmniBar:StopMovingOrSizing()
-						table.remove(active, i)
-						break
+				if not OmniBarDB.visible then
+					bar:Hide()
+					for i = 1, #active do
+						if active[i] == bar then
+							table.remove(active, i)
+							break
+						end
 					end
+				else
+					if OmniBarDB.dim then bar:SetAlpha(OMNI_BAR_DIM) end
 				end
+				OmniBar:StopMovingOrSizing()
 				OmniBar_Position()
 			end)
+			if OmniBarDB.dim then f:SetAlpha(OMNI_BAR_DIM) end
 			f.cooldown:SetScript("OnShow", OmniBar_Position)
 			f:Hide()
 			table.insert(bars, f)
@@ -109,6 +130,14 @@ function OmniBar:ADDON_LOADED(addon)
 		else
 			OmniBar:Show()
 		end
+
+		if OmniBarDB.visible then
+			for spellID,_ in pairs(abilities) do
+				OmniBar_Show(spellID, true)
+			end
+		end
+		OmniBar_Position()
+
 		OmniBar:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		OmniBar:RegisterEvent("PLAYER_ENTERING_WORLD")
 		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: Type /ob for options." )
@@ -134,25 +163,51 @@ OmniBar_Center()
 function OmniBar_Hide()
 	-- Hide all the bars
 	for i = 1, MAX_OMNI_BARS do
-		bars[i]:Hide()
+		bars[i].cooldown:Hide()
+		if not OmniBarDB.visible then
+			bars[i]:Hide()
+		end
 	end
 	OmniBar.test = nil
 end
 
-function OmniBar_Show(spellID)
+function OmniBar_Show(spellID, init)
 	OmniBar:Hide()
 	local i = 1
 
 	-- Try to find a free bar
 	while bars[i] and bars[i]:IsVisible() do
+		if OmniBarDB.visible then
+			if bars[i].spellID == spellID then
+				local start, duration = bars[i].cooldown:GetCooldownTimes()
+				if start >= 0 and math.floor((start+duration)/1000-GetTime()) <= 1 then
+					-- just reuse the bar if it is about to expire anyway
+					break
+				end
+			end
+		end
 		i = i + 1
 		if i > MAX_OMNI_BARS then return end
 	end
 
 	bars[i].icon:SetTexture(abilities[spellID].icon)
-	table.insert(active, bars[i])
-	bars[i].cooldown:SetCooldown(GetTime(), abilities[spellID].duration)
-	bars[i].cooldown:SetSwipeColor(0, 0, 0, 0.6)
+	bars[i].spellID = spellID
+	if not bars[i].active then
+		bars[i].added = GetTime()
+		table.insert(active, bars[i])
+	end
+	if OmniBarDB.visible then
+		bars[i].active = true
+		-- Keep cooldowns together
+		table.sort(active, function(a,b) return a.spellID == b.spellID and a.added < b.added or a.spellID > b.spellID end)
+	end
+	if not init then
+		-- We don't want duration to be too long if we're just testing
+		local duration = OmniBar.test and math.random(5,30) or abilities[spellID].duration
+		bars[i].cooldown:SetCooldown(GetTime(), duration)
+		bars[i].cooldown:SetSwipeColor(0, 0, 0, 0.65)
+		bars[i]:SetAlpha(1)
+	end
 	bars[i]:Show()
 end
 
@@ -182,7 +237,7 @@ SlashCmdList.OmniBar = function(msg)
 
 	if cmd == "center" then
 		OmniBarDB.center = not OmniBarDB.center
-		local status = OmniBarDB.center and "enabled" or "disabled"
+		local status = OmniBarDB.center and "Enabled" or "Disabled"
 		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: Center " .. status)
 		local y = select(5, OmniBar:GetPoint())
 		OmniBar:SetPoint("CENTER", 0, y)
@@ -199,6 +254,53 @@ SlashCmdList.OmniBar = function(msg)
 
 			OmniBarDB.size = size
 			OmniBar_Position()
+		end
+
+	elseif cmd == "hide" or cmd == "show" then
+		OmniBarDB.visible = cmd == "show" and true or false
+		local status = OmniBarDB.visible and "Show" or "Hide"
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: " .. status)
+		OmniBar_Hide()
+		active = {}
+		for i = 1, MAX_OMNI_BARS do
+			bars[i].active = nil
+		end
+
+		if OmniBarDB.visible then
+			for spellID,_ in pairs(abilities) do
+				OmniBar_Show(spellID, true)
+			end
+		end
+		OmniBar_Position()
+
+	elseif cmd == "border" then
+		OmniBarDB.noborder = not OmniBarDB.noborder
+		local status = OmniBarDB.noborder and "disabled" or "enabled"
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: Border " .. status)
+		for i = 1, MAX_OMNI_BARS do
+			bars[i].cooldown:SetDrawSwipe(OmniBarDB.spiral)
+			if OmniBarDB.noborder then
+				bars[i].icon:SetTexCoord(0.07, 0.9, 0.07, 0.9)
+			else
+				bars[i].icon:SetTexCoord(0, 0, 0, 1, 1, 0, 1, 1)
+			end
+		end
+
+	elseif cmd == "text" then
+		OmniBarDB.noCooldownCount = not OmniBarDB.noCooldownCount
+		local status = OmniBarDB.noCooldownCount and "Disabled" or "Enabled"
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: Text " .. status)
+		for i = 1, MAX_OMNI_BARS do
+			bars[i].cooldown:SetHideCountdownNumbers(OmniBarDB.noCooldownCount and true or false)
+			bars[i].cooldown.noCooldownCount = OmniBarDB.noCooldownCount and true or nil
+		end
+
+	elseif cmd == "dim" then
+		OmniBarDB.dim = not OmniBarDB.dim
+		local status = OmniBarDB.dim and "Dim Enabled" or "Dim Disabled"
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: " .. status)
+		for i = 1, MAX_OMNI_BARS do
+			bars[i]:SetAlpha(OmniBarDB.dim and bars[i].cooldown:GetCooldownTimes() == 0 and OMNI_BAR_DIM or 1)
 		end
 
 	elseif cmd == "lock" or cmd == "unlock" then
@@ -219,7 +321,7 @@ SlashCmdList.OmniBar = function(msg)
 		local test, count = OmniBar.test, 0
 		OmniBar_Hide()
 		if test then return end
-		OmniBar.test = true
+		OmniBar.test = true		
 		for k,v in pairs(abilities) do
 			OmniBar_Show(k)
 			count = count + 1
@@ -231,7 +333,12 @@ SlashCmdList.OmniBar = function(msg)
 		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob size <value>")
 		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob lock")
 		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob unlock")
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob hide")
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob show")
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob dim")
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob border")
 		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob center")
+		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob text")
 		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob spiral")
 		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: /ob test")
 	end
