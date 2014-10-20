@@ -18,12 +18,15 @@ local abilities = {
 	[41084]  = { duration = 24 }, -- Silencing Shot
 	[115781] = { duration = 24 }, -- Optical Blast
 	[147362] = { duration = 24 }, -- Counter Shot
+	[47476]  = { duration = 60 }, -- Strangulate
+	[91802]  = { duration = 30 }, -- Shambling Rush
+	[106839] = { duration = 15 }, -- Skull Bash
 }
 
 -- Defaults
-defaults = {
+local defaults = {
 	size            = 40,
-	columns         = 0,
+	columns         = 9,
 	locked          = false,
 	center          = false,
 	border          = true,
