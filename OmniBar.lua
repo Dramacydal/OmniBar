@@ -27,13 +27,14 @@ defaults = {
 	locked          = false,
 	center          = false,
 	border          = true,
+	growUpward      = true,
 	showUnused      = false,
 	unusedAlpha     = 0.45,
 	swipeAlpha      = 0.65,
 	noCooldownCount = false,
 }
 
-OmniBarDB = OmniBarDB or { version = 1, Default = defaults }
+local SETTINGS_VERSION = 2
 
 local icons, active, _ = {}, {}
 
@@ -128,15 +129,9 @@ function OmniBar:ADDON_LOADED(addon)
 			self:Show()
 		end
 
-		if self.settings.showUnused then
-			for spellID,_ in pairs(abilities) do
-				self:AddIcon(spellID, true)
-			end
-		end
-
+		self:RefreshIcons()
 		self:UpdateIcons()
 		self:Center()
-		self:Position()
 
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -144,6 +139,9 @@ function OmniBar:ADDON_LOADED(addon)
 end
 
 function OmniBar:LoadSettings(specific)
+	if (not OmniBarDB) or (not OmniBarDB.version) or OmniBarDB.version ~= SETTINGS_VERSION then
+		OmniBarDB = { version = SETTINGS_VERSION, Default = defaults }
+	end
 	local profile = UnitName("player").." - "..GetRealmName()
 	if specific then
 		OmniBarDB[profile] = nil
@@ -168,11 +166,9 @@ function OmniBar:LoadSettings(specific)
 	-- Refresh if we toggled specific
 	if specific then
 		self:LoadPosition()
-		self:HideIcons()
-		self:ShowIcons()
+		self:RefreshIcons()
 		self:UpdateIcons()
 		self:Center()
-		self:Position()
 	end	
 end
 
@@ -205,7 +201,7 @@ end
 
 function OmniBar:PLAYER_ENTERING_WORLD()
 	self:LoadPosition()
-	self:HideIcons()
+	self:RefreshIcons()
 
 end
 
@@ -214,21 +210,19 @@ function OmniBar:Center()
 	self:SetClampRectInsets(clamp, -clamp, 0, 0)
 end
 
-function OmniBar:HideIcons()
+function OmniBar:RefreshIcons()
 	-- Hide all the icons
 	for i = 1, self.MAX_ICONS do
 		icons[i].cooldown:Hide()
-		if not self.settings.showUnused then
+		if icons[i].duplicate or not self.settings.showUnused then
 			icons[i]:Hide()
 		end
 	end
-end
-
-function OmniBar:ShowIcons()
 	active = {}
 	for i = 1, self.MAX_ICONS do
 		icons[i].active = nil
 	end
+
 	if self.settings.showUnused then
 		for spellID,_ in pairs(abilities) do
 			self:AddIcon(spellID, true)
@@ -239,23 +233,26 @@ end
 
 function OmniBar:AddIcon(spellID, init, test)
 	self:Hide()
-	local i = 1
+	local i, duplicate = 1
 
 	-- Try to find a free bar
 	while icons[i] and icons[i]:IsVisible() do
-		if self.settings.showUnused then
-			if icons[i].spellID == spellID then
-				local start, duration = icons[i].cooldown:GetCooldownTimes()
-				if start >= 0 and math.floor((start+duration)/1000-GetTime()) <= 1 then
-					-- just reuse the bar if it is about to expire anyway
-					break
-				end
+
+		if icons[i].spellID == spellID then
+			local start, duration = icons[i].cooldown:GetCooldownTimes()
+			if start >= 0 and (start+duration)/1000-GetTime() <= 1 then
+				-- just reuse the icon if it is about to expire anyway
+				break
+			else
+				-- icon is a duplicate
+				duplicate = true
 			end
 		end
+
 		i = i + 1
 		if i > self.MAX_ICONS then return end
 	end
-
+	icons[i].duplicate = duplicate
 	icons[i].icon:SetTexture(abilities[spellID].icon)
 	icons[i].spellID = spellID
 	if not icons[i].active then
@@ -303,7 +300,7 @@ function OmniBar:UpdateIcons()
 end
 
 function OmniBar:Test()
-	self:HideIcons()
+	self:RefreshIcons()
 	for k,v in pairs(abilities) do
 		self:AddIcon(k, nil, true)
 	end
@@ -319,7 +316,7 @@ function OmniBar:Position()
 		end
 		return
 	end
-	local count, rows, numActive = 0, 1, #active
+	local count, rows, numActive, grow = 0, 1, #active, self.settings.growUpward and 1 or -1
 	for i = 1, numActive do
 		active[i]:ClearAllPoints()
 		local columns = self.settings.columns and self.settings.columns > 0 and self.settings.columns < numActive and
@@ -327,7 +324,7 @@ function OmniBar:Position()
 		if i > 1 then
 			count = count + 1
 			if count >= columns then
-				active[i]:SetPoint("CENTER", OmniBar, "CENTER", -self.settings.size*(columns-1)/2, -OmniBar.settings.size*rows)
+				active[i]:SetPoint("CENTER", OmniBar, "CENTER", -self.settings.size*(columns-1)/2, OmniBar.settings.size*rows*grow)
 				count = 0
 				rows = rows + 1
 			else
