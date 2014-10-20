@@ -1,0 +1,18 @@
+local _, L = ...
+
+L["Test"] = "Test"
+L["Lock"] = "Lock"
+L["Center Lock"] = "Center Lock"
+L["Use Global Settings"] = "Use Global Settings"
+L["Show Unused Icons"] = "Show Unused Icons"
+L["Countdown Count"] = "Countdown Count"
+L["Show Border"] = "Show Border"
+L["Size"] = "Size"
+L["Set the size of the icons"] = "Set the size of the icons"
+L["Columns"] = "Columns"
+L["Set the maximum icons per row"] = "Set the maximum icons per row"
+L["Unlimited"] = "Unlimited"
+L["Unused Icon Alpha"] = "Unused Icon Alpha"
+L["Set the transparency of unused icons"] = "Set the transparency of unused icons"
+L["Swipe Alpha"] = "Swipe Alpha"
+L["Set the transparency of the swipe animation"] = "Set the transparency of the swipe animation"

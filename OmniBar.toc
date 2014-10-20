@@ -4,6 +4,8 @@
 ## Version: @project-version@
 ## Author: Jordon
 ## DefaultState: Enabled
-## SavedVariablesPerCharacter: OmniBarDB
+## SavedVariables: OmniBarDB
 
+localization.lua
 OmniBar.lua
+OmniBarOptions.lua
