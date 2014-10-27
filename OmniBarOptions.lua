@@ -48,14 +48,6 @@ Center:SetScript("OnClick", function(self)
 end)
 Center:SetPoint("TOPLEFT", Lock, "BOTTOMLEFT", 0, -2)
 
-local Specific = CreateFrame("CheckButton", O.."Specific", OptionsPanel, "OptionsCheckButtonTemplate")
-_G[O.."SpecificText"]:SetText(L["Use Global Settings"])
-Specific:SetScript("OnClick", function(self)
-	OmniBar:LoadSettings(self:GetChecked() and 0 or 1)
-	OptionsPanel:refresh()
-end)
-Specific:SetPoint("TOPLEFT", Center, "BOTTOMLEFT", 0, -2)
-
 local Visible = CreateFrame("CheckButton", O.."Visible", OptionsPanel, "OptionsCheckButtonTemplate")
 _G[O.."VisibleText"]:SetText(L["Show Unused Icons"])
 Visible:SetScript("OnClick", function(self)
@@ -63,7 +55,7 @@ Visible:SetScript("OnClick", function(self)
 	OmniBar:RefreshIcons()
 	OmniBar:UpdateIcons()
 end)
-Visible:SetPoint("TOPLEFT", Specific, "BOTTOMLEFT", 0, -2)
+Visible:SetPoint("TOPLEFT", Center, "BOTTOMLEFT", 0, -2)
 
 local Grow = CreateFrame("CheckButton", O.."Grow", OptionsPanel, "OptionsCheckButtonTemplate")
 _G[O.."GrowText"]:SetText(L["Grow Rows Upward"])
@@ -90,17 +82,57 @@ Border:SetScript("OnClick", function(self)
 end)
 Border:SetPoint("TOPLEFT", ShowCooldownCount, "BOTTOMLEFT", 0, -2)
 
+local Specific = CreateFrame("CheckButton", O.."Specific", OptionsPanel, "OptionsCheckButtonTemplate")
+_G[O.."SpecificText"]:SetText(L["Use Global Settings"])
+Specific:SetScript("OnClick", function(self)
+	OmniBar:LoadSettings(self:GetChecked() and 0 or 1)
+	OptionsPanel:refresh()
+
+	-- Refresh the cooldowns
+	i = 1
+	while _G[O..i] do
+		_G[O..i]:refresh()
+		i = i + 1
+	end
+
+end)
+Specific:SetPoint("TOPLEFT", Lock, "TOPLEFT", 250, 0)
+
+local Arena = CreateFrame("CheckButton", O.."Arena", OptionsPanel, "OptionsCheckButtonTemplate")
+_G[O.."ArenaText"]:SetText(L["Show in Arenas"])
+Arena:SetScript("OnClick", function(self)
+	OmniBar.settings.noArena = not self:GetChecked()
+	OmniBar:PLAYER_ENTERING_WORLD()
+end)
+Arena:SetPoint("TOPLEFT", Center, "TOPLEFT", 250, 0)
+
+local Battleground = CreateFrame("CheckButton", O.."Battleground", OptionsPanel, "OptionsCheckButtonTemplate")
+_G[O.."BattlegroundText"]:SetText(L["Show in Battlegrounds"])
+Battleground:SetScript("OnClick", function(self)
+	OmniBar.settings.noBattleground = not self:GetChecked()
+	OmniBar:PLAYER_ENTERING_WORLD()
+end)
+Battleground:SetPoint("TOPLEFT", Visible, "TOPLEFT", 250, 0)
+
+local World = CreateFrame("CheckButton", O.."World", OptionsPanel, "OptionsCheckButtonTemplate")
+_G[O.."WorldText"]:SetText(L["Show in World"])
+World:SetScript("OnClick", function(self)
+	OmniBar.settings.noWorld = not self:GetChecked()
+	OmniBar:PLAYER_ENTERING_WORLD()
+end)
+World:SetPoint("TOPLEFT", Grow, "TOPLEFT", 250, 0)
+
 local function CreateSlider(text, parent, low, high, step)
 	local name = parent:GetName() .. text
 	local slider = CreateFrame("Slider", name, parent, "OptionsSliderTemplate")
-	slider:SetWidth(300)
+	slider:SetWidth(275)
 	slider:SetMinMaxValues(low, high)
 	slider:SetValueStep(step)
 	slider:SetObeyStepOnDrag(true)
 	_G[name .. "Low"]:SetText()
 	local high = _G[name .. "High"]
 	high:ClearAllPoints()
-	high:SetPoint("BOTTOMRIGHT", slider, "TOPRIGHT", 0, 5)
+	high:SetPoint("BOTTOMRIGHT", slider, "TOPRIGHT", 0, 8)
 	return slider
 end
 
@@ -135,7 +167,7 @@ ColumnsDescription:SetPoint("TOPLEFT", Columns, "BOTTOMLEFT", 0, -8)
 ColumnsSlider:SetPoint("TOPLEFT", ColumnsDescription, "BOTTOMLEFT", 0, -8)
 
 local Dim = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-Dim:SetText(L["Unused Icon Alpha"])
+Dim:SetText(L["Unused Icon Transparency"])
 local DimDescription = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 DimDescription:SetText(L["Set the transparency of unused icons"])
 DimSlider = CreateSlider("Dim", OptionsPanel, 0, 100, 1)
@@ -149,7 +181,7 @@ DimDescription:SetPoint("TOPLEFT", Dim, "BOTTOMLEFT", 0, -8)
 DimSlider:SetPoint("TOPLEFT", DimDescription, "BOTTOMLEFT", 0, -8)
 
 local Swipe = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-Swipe:SetText(L["Swipe Alpha"])
+Swipe:SetText(L["Swipe Transparency"])
 local SwipeDescription = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 SwipeDescription:SetText(L["Set the transparency of the swipe animation"])
 SwipeSlider = CreateSlider("Swipe", OptionsPanel, 0, 100, 1)
@@ -170,6 +202,9 @@ OptionsPanel.refresh = function()
 	ShowCooldownCount:SetChecked(not OmniBar.settings.noCooldownCount)
 	Center:SetChecked(OmniBar.settings.center)
 	Border:SetChecked(OmniBar.settings.border)
+	Arena:SetChecked(not OmniBar.settings.noArena)
+	Battleground:SetChecked(not OmniBar.settings.noBattleground)
+	World:SetChecked(not OmniBar.settings.noWorld)
 	SizeSlider:SetValue(OmniBar.settings.size)
 	ColumnsSlider:SetValue(OmniBar.settings.columns and OmniBar.settings.columns > 0 and OmniBar.settings.columns or OmniBar.MAX_ICONS)
 	DimSlider:SetValue(OmniBar.settings.unusedAlpha and OmniBar.settings.unusedAlpha*100 or 1)
@@ -177,3 +212,62 @@ OptionsPanel.refresh = function()
 end
 
 InterfaceOptions_AddCategory(OptionsPanel)
+
+local subIndex = 1
+
+local function CreateSub(name)
+	local OptionsPanelFrame = CreateFrame("Frame", O..subIndex)
+	OptionsPanelFrame.spells = {}
+	OptionsPanelFrame.parent = addonName
+	OptionsPanelFrame.name = LOCALIZED_CLASS_NAMES_MALE[name] or L[name]
+
+	local index, parent = 1
+	for spellID, cooldown in pairs(OmniBar.cooldowns) do
+		if cooldown.class == name then --or subIndex == 1 then
+			local spell = CreateFrame("CheckButton", O..subIndex.."Item"..index, OptionsPanelFrame, "OptionsCheckButtonTemplate")
+			_G[O..subIndex.."Item"..index.."Text"]:SetText(GetSpellInfo(spellID))
+			spell:SetScript("OnClick", function(self)
+				if not OmniBar.settings.cooldowns[spellID] then OmniBar.settings.cooldowns[spellID] = {} end
+				OmniBar.settings.cooldowns[spellID].enabled = self:GetChecked()
+				OmniBar:RefreshIcons()
+				local i = 1
+				while _G[O..i] do
+					_G[O..i]:refresh()
+					i = i + 1
+				end
+			end)
+			if index > 1 then
+				-- Split into columns if we're showing all cooldowns
+				if (index-1) % 3 == 0 then
+					spell:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -2)
+					parent = spell
+				else
+					spell:SetPoint("TOPLEFT", left, "TOPLEFT", 190, 0)
+				end
+			else
+				spell:SetPoint("TOPLEFT", 24, -24)
+				parent = spell
+			end
+			left = spell
+			index = index + 1
+			spell.spellID = spellID
+			table.insert(OptionsPanelFrame.spells, spell)
+		end
+	end
+	
+	OptionsPanelFrame.default = OptionsPanel.default
+	OptionsPanelFrame.refresh = function(self)
+		for i = 1, #self.spells do
+			self.spells[i]:SetChecked(OmniBar:SpellIsEnabled(self.spells[i].spellID))
+		end
+	end
+
+	InterfaceOptions_AddCategory(OptionsPanelFrame)
+	subIndex = subIndex + 1
+end
+
+-- Sub category
+--CreateSub("ALL")
+for i in pairs(CLASS_SORT_ORDER) do
+	CreateSub(CLASS_SORT_ORDER[i])
+end
