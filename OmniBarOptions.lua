@@ -27,6 +27,35 @@ Test:SetScript("OnClick", function()
 	OmniBar:Test()
 end)
 
+StaticPopupDialogs["OMNIBAR_CONFIRM_RESET"] = {
+	text = CONFIRM_RESET_SETTINGS,
+	button1 = YES,
+	button2 = NO,
+	OnAccept = function()
+		OmniBar:Reset()
+		OptionsPanel:refresh()
+
+		-- Refresh the cooldowns
+		i = 1
+		while _G[O..i] do
+			_G[O..i]:refresh()
+			i = i + 1
+		end
+	end,
+	timeout = 0,
+	whileDead = true,
+	hideOnEscape = true,
+	enterClicksFirstButton = true
+}
+
+local Reset = CreateFrame("Button", O.."Reset", OptionsPanel, "OptionsButtonTemplate")
+Reset:SetText(L["Reset Settings"])
+Reset:SetPoint("TOPRIGHT", Test, "TOPLEFT", -5, 0)
+Reset:SetSize(120, 30)
+Reset:SetScript("OnClick", function()
+	StaticPopup_Show("OMNIBAR_CONFIRM_RESET")
+end)
+
 local Lock = CreateFrame("CheckButton", O.."Lock", OptionsPanel, "OptionsCheckButtonTemplate")
 local Center = CreateFrame("CheckButton", O.."Center", OptionsPanel, "OptionsCheckButtonTemplate")
 
@@ -96,7 +125,7 @@ Specific:SetScript("OnClick", function(self)
 	end
 
 end)
-Specific:SetPoint("TOPLEFT", Lock, "TOPLEFT", 250, 0)
+Specific:SetPoint("TOPLEFT", Lock, "TOPLEFT", 300, 0)
 
 local Arena = CreateFrame("CheckButton", O.."Arena", OptionsPanel, "OptionsCheckButtonTemplate")
 _G[O.."ArenaText"]:SetText(L["Show in Arenas"])
@@ -104,7 +133,7 @@ Arena:SetScript("OnClick", function(self)
 	OmniBar.settings.noArena = not self:GetChecked()
 	OmniBar:PLAYER_ENTERING_WORLD()
 end)
-Arena:SetPoint("TOPLEFT", Center, "TOPLEFT", 250, 0)
+Arena:SetPoint("TOPLEFT", Center, "TOPLEFT", 300, 0)
 
 local Battleground = CreateFrame("CheckButton", O.."Battleground", OptionsPanel, "OptionsCheckButtonTemplate")
 _G[O.."BattlegroundText"]:SetText(L["Show in Battlegrounds"])
@@ -112,7 +141,7 @@ Battleground:SetScript("OnClick", function(self)
 	OmniBar.settings.noBattleground = not self:GetChecked()
 	OmniBar:PLAYER_ENTERING_WORLD()
 end)
-Battleground:SetPoint("TOPLEFT", Visible, "TOPLEFT", 250, 0)
+Battleground:SetPoint("TOPLEFT", Visible, "TOPLEFT", 300, 0)
 
 local World = CreateFrame("CheckButton", O.."World", OptionsPanel, "OptionsCheckButtonTemplate")
 _G[O.."WorldText"]:SetText(L["Show in World"])
@@ -120,7 +149,7 @@ World:SetScript("OnClick", function(self)
 	OmniBar.settings.noWorld = not self:GetChecked()
 	OmniBar:PLAYER_ENTERING_WORLD()
 end)
-World:SetPoint("TOPLEFT", Grow, "TOPLEFT", 250, 0)
+World:SetPoint("TOPLEFT", Grow, "TOPLEFT", 300, 0)
 
 local function CreateSlider(text, parent, low, high, step)
 	local name = parent:GetName() .. text
@@ -151,6 +180,20 @@ end)
 Size:SetPoint("TOPLEFT", Border, "BOTTOMLEFT", 0, -16)
 SizeDescription:SetPoint("TOPLEFT", Size, "BOTTOMLEFT", 0, -8)
 SizeSlider:SetPoint("TOPLEFT", SizeDescription, "BOTTOMLEFT", 0, -8)
+
+local Padding = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+Padding:SetText(L["Padding"])
+local PaddingDescription = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+PaddingDescription:SetText(L["Set the space between icons"])
+PaddingSlider = CreateSlider("Padding", OptionsPanel, 0, 100, 1)
+PaddingSlider:SetScript("OnValueChanged", function(self, value)
+	_G[self:GetName() .. "High"]:SetText(value)
+	OmniBar.settings.padding = value
+	OmniBar:Position()
+end)
+Padding:SetPoint("TOPLEFT", Size, "TOPLEFT", 300, 0)
+PaddingDescription:SetPoint("TOPLEFT", Padding, "BOTTOMLEFT", 0, -8)
+PaddingSlider:SetPoint("TOPLEFT", PaddingDescription, "BOTTOMLEFT", 0, -8)
 
 local Columns = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 Columns:SetText(L["Columns"])
@@ -206,6 +249,7 @@ OptionsPanel.refresh = function()
 	Battleground:SetChecked(not OmniBar.settings.noBattleground)
 	World:SetChecked(not OmniBar.settings.noWorld)
 	SizeSlider:SetValue(OmniBar.settings.size)
+	PaddingSlider:SetValue(OmniBar.settings.padding or 0)
 	ColumnsSlider:SetValue(OmniBar.settings.columns and OmniBar.settings.columns > 0 and OmniBar.settings.columns or OmniBar.MAX_ICONS)
 	DimSlider:SetValue(OmniBar.settings.unusedAlpha and OmniBar.settings.unusedAlpha*100 or 1)
 	SwipeSlider:SetValue(OmniBar.settings.swipeAlpha and OmniBar.settings.swipeAlpha*100 or 65)

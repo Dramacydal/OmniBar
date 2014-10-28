@@ -1,6 +1,7 @@
 local _, L = ...
 
 L["Test"] = "Test"
+L["Reset Settings"] = "Reset Settings"
 L["Lock"] = "Lock"
 L["Center Lock"] = "Center Lock"
 L["Use Global Settings"] = "Use Global Settings"
@@ -12,6 +13,8 @@ L["Show in Arenas"] = "Show in Arenas"
 L["Show in Battlegrounds"] = "Show in Battlegrounds"
 L["Show in World"] = "Show in World"
 L["Size"] = "Size"
+L["Padding"] = "Padding"
+L["Set the space between icons"] = "Set the space between icons"
 L["Set the size of the icons"] = "Set the size of the icons"
 L["Columns"] = "Columns"
 L["Set the maximum icons per row"] = "Set the maximum icons per row"
