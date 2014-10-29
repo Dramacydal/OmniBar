@@ -24,3 +24,5 @@ L["Set the transparency of unused icons"] = "Set the transparency of unused icon
 L["Swipe Transparency"] = "Swipe Transparency"
 L["Set the transparency of the swipe animation"] = "Set the transparency of the swipe animation"
 L["ALL"] = "All"
+L["Locked"] = "Locked"
+L["Unlocked"] = "Unlocked"

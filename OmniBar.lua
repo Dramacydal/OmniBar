@@ -537,7 +537,7 @@ SlashCmdList.OmniBar = function(msg)
 		OmniBar.settings.locked = cmd == "lock" and true or false
 		OmniBar:Position()
 		if OmniBarOptionsPanelLock then OmniBarOptionsPanelLock:SetChecked(OmniBar.settings.locked) end
-		local status = OmniBar.settings.locked and "Locked" or "Unlocked"
+		local status = OmniBar.settings.locked and L["Locked"] or L["Unlocked"]
 		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: " .. status)
 
 	elseif cmd == "reset" then
