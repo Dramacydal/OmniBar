@@ -33,6 +33,7 @@ local cooldowns = {
 	[871]    = { default = false, duration = 180, class = "WARRIOR"     }, -- Shield Wall
 	[1719]   = { default = false, duration = 180, class = "WARRIOR"     }, -- Recklessness
 	[3411]   = { default = false, duration = 30,  class = "WARRIOR"     }, -- Intervene
+	[5246]   = { default = false, duration = 90,  class = "WARRIOR"     }, -- Intimidating Shout
 	[6544]   = { default = false, duration = 45,  class = "WARRIOR"     }, -- Heroic Leap
 	[6552]   = { default = true,  duration = 15,  class = "WARRIOR"     }, -- Pummel
 	[18499]  = { default = false, duration = 30,  class = "WARRIOR"     }, -- Berserker Rage
