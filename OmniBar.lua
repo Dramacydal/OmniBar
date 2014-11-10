@@ -114,7 +114,7 @@ local cooldowns = {
 local defaults = {
 	size            = 40,
 	columns         = 9,
-	padding         = 0,
+	padding         = 2,
 	locked          = false,
 	center          = false,
 	border          = true,
@@ -128,11 +128,36 @@ local defaults = {
 	noWorld         = false,
 }
 
+local OmniBar
+
 local Masque = LibStub and LibStub("Masque", true)
 
 local SETTINGS_VERSION = 2
 
-local icons, active, _ = {}, {}
+local MAX_DUPLICATE_ICONS = 5
+
+local BASE_ICON_SIZE = 36
+
+StaticPopupDialogs["OMNIBAR_CONFIRM_RESET"] = {
+	text = CONFIRM_RESET_SETTINGS,
+	button1 = YES,
+	button2 = NO,
+	OnAccept = function()
+		OmniBar_Reset(OmniBar)
+		if OmniBarOptions then OmniBarOptions:refresh() end
+
+		-- Refresh the cooldowns
+		i = 1
+		while _G["OmniBarOptionsPanel" .. i] do
+			_G["OmniBarOptionsPanel" .. i]:refresh()
+			i = i + 1
+		end
+	end,
+	timeout = 0,
+	whileDead = true,
+	hideOnEscape = true,
+	enterClicksFirstButton = true
+}
 
 for spellID,_ in pairs(cooldowns) do
 	local name, _, icon = GetSpellInfo(spellID)
@@ -140,106 +165,89 @@ for spellID,_ in pairs(cooldowns) do
 	cooldowns[spellID].name = name
 end
 
-local OmniBar = CreateFrame("Frame", "OmniBar", UIParent)
-OmniBar.cooldowns = cooldowns
-OmniBar.MAX_ICONS = 100
-OmniBar:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
-OmniBar:SetFrameStrata("MEDIUM")
-OmniBar:SetClampedToScreen(true)
-OmniBar:SetMovable(true)
-OmniBar:RegisterForDrag("LeftButton")
-OmniBar:SetScript("OnDragStart", function(self)
-	self:Center()
-	self:StartMoving()
-end)
-
-OmniBar:SetScript("OnDragStop", function(self)
-	self:StopMovingOrSizing()
-	self:SavePosition()
-end)
-
-OmniBar:EnableMouse(true)
-OmniBar.text = OmniBar:CreateFontString(nil, "ARTWORK")
-OmniBar.text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-OmniBar.text:SetTextColor(1, 1, 0, 1)
-OmniBar.text:SetText("OmniBar")
-OmniBar.text:SetPoint("CENTER", OmniBar, "CENTER", 0, 0)
-local w, h = OmniBar.text:GetSize()
-OmniBar:SetSize(w*1.1, h*2)
-local texture = OmniBar:CreateTexture()
-texture:SetAllPoints()
-texture:SetTexture(0, 0, 0, 0.3)
-
-OmniBar:RegisterEvent("ADDON_LOADED")
-function OmniBar:ADDON_LOADED(addon)
-	if addon == addonName then
-		self:UnregisterEvent("ADDON_LOADED")
-
-		-- Load the settings
-		self:LoadSettings()
-
-		-- Create the icons
-		for i = 1, self.MAX_ICONS do
-			local f = CreateFrame("Button", "OmniBar"..i, UIParent, "ActionButtonTemplate")
-			f:SetScript("OnMouseDown", function(self, button)
-				if button == "LeftButton" and not OmniBar.settings.locked then
-					OmniBar:Center()
-					OmniBar:StartMoving()
-				end
-			end)
-			f:SetScript("OnMouseUp", function(self, button)
-				if button == "LeftButton" and not OmniBar.settings.locked then
-					OmniBar:StopMovingOrSizing()
-					OmniBar:SavePosition()
-				end
-			end)
-			f:SetFrameStrata("LOW")
-			f:SetNormalTexture(nil)
-			f.icon = f:CreateTexture("OmniBar"..i.."Icon")
-			f.icon:SetAllPoints()
-			f.cooldown = CreateFrame("Cooldown", "OmniBar"..i.."Cooldown", f, "CooldownFrameTemplate")
-			f.cooldown:SetAllPoints()
-			f.cooldown:SetDrawBling(false)
-			f.cooldown:SetReverse(true)
-			f.cooldown:SetDrawEdge(false)
-			f.cooldown:SetScript("OnHide", function(self)
-				local bar = self:GetParent()
-				if not OmniBar.settings.showUnused then
-					bar:Hide()
-					for i = 1, #active do
-						if active[i] == bar then
-							table.remove(active, i)
-							break
-						end
-					end
-				else
-					if OmniBar.settings.unusedAlpha then bar:SetAlpha(OmniBar.settings.unusedAlpha) end
-				end
-				OmniBar:StopMovingOrSizing()
-				OmniBar:Position()
-			end)
-			f.cooldown:SetScript("OnShow", function() OmniBar:Position() end)
-			f:Disable()
-			f:Hide()
-			table.insert(icons, f)
-		end
-
-		if self.settings.locked then
-			self:Hide()
-		else
-			self:Show()
-		end
-
-		self:RefreshIcons()
-		self:UpdateIcons()
-		self:Center()
-
-		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		self:RegisterEvent("PLAYER_ENTERING_WORLD")
+function OmniBar_ShowAnchor(self)
+	if self.settings.locked or #self.active > 0 then
+		self.anchor:Hide()
+	else
+		self.anchor:Show()
 	end
 end
 
-function OmniBar:LoadSettings(specific)
+function OmniBar_CreateIcon(self)
+	if InCombatLockdown() then return end
+	self.numIcons = self.numIcons + 1
+	local f = CreateFrame("Button", self:GetName().."Icon"..self.numIcons, self.anchor, "OmniBarButtonTemplate")
+	table.insert(self.icons, f)
+end
+
+function OmniBar_OnEvent(self, event, ...)
+	if event == "ADDON_LOADED" then
+		local name = ...
+		if name ~= addonName then return end
+		self:UnregisterEvent("ADDON_LOADED")
+		OmniBar = self
+		self.icons = {}
+		self.active = {}
+		self.cooldowns = cooldowns
+		self.BASE_ICON_SIZE = BASE_ICON_SIZE
+		self.MAX_DUPLICATE_ICONS = MAX_DUPLICATE_ICONS
+		self.numIcons = 0
+		self:RegisterForDrag("LeftButton")
+
+		-- Load the settings
+		OmniBar_LoadSettings(self)
+
+		-- Create the icons
+		for spellID,_ in pairs(cooldowns) do
+			if OmniBar_IsSpellEnabled(self, spellID) then
+				OmniBar_CreateIcon(self)
+			end
+		end
+
+		-- Create the duplicate icons
+		for i = 1, self.MAX_DUPLICATE_ICONS do
+			OmniBar_CreateIcon(self)
+		end
+
+		OmniBar_ShowAnchor(self)
+		OmniBar_RefreshIcons(self)
+		OmniBar_UpdateIcons(self)
+		OmniBar_Center(self)
+
+		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+		self:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+		-- Add Options Panel category
+		local frame = CreateFrame("Frame", "OmniBarOptions")
+		frame:SetScript("OnShow", function(self)
+			LoadAddOn("OmniBar_Options")
+			self:refresh()
+		end)
+		frame.name = addonName
+		InterfaceOptions_AddCategory(frame)
+
+	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
+		local _, event, _, sourceGUID, _, sourceFlags, _,_,_,_,_, spellID = ...
+		if self.disabled then return end
+		if event == "SPELL_CAST_SUCCESS" and cooldowns[spellID] and bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) ~= 0 then
+			if OmniBar_IsSpellEnabled(self, spellID) then
+				OmniBar_AddIcon(self, spellID, sourceGUID)
+			end
+		end
+
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		local _, zone = IsInInstance()
+		OmniBar_LoadPosition(self)
+		self.disabled = (zone == "arena" and self.settings.noArena) or
+			(zone == "pvp" and self.settings.noBattleground) or
+			(zone == "none" and self.settings.noWorld)
+		OmniBar_RefreshIcons(self)
+
+	end
+end
+
+
+function OmniBar_LoadSettings(self, specific)
 	if (not OmniBarDB) or (not OmniBarDB.version) or OmniBarDB.version ~= SETTINGS_VERSION then
 		OmniBarDB = { version = SETTINGS_VERSION, Default = {} }
 		for k,v in pairs(defaults) do
@@ -276,26 +284,29 @@ function OmniBar:LoadSettings(specific)
 
 	self.settings.cooldowns = self.settings.cooldowns or {}
 
+	-- Set the scale
+	self.container:SetScale(self.settings.size/BASE_ICON_SIZE)
+
 	-- Refresh if we toggled specific
 	if specific then
-		self:LoadPosition()
-		self:RefreshIcons()
-		self:UpdateIcons()
-		self:Center()
+		OmniBar_LoadPosition(self)
+		OmniBar_RefreshIcons(self)
+		OmniBar_UpdateIcons(self)
+		OmniBar_Center(self)
 	end	
 end
 
-function OmniBar:Reset()
+function OmniBar_Reset(self)
 	local profile = UnitName("player").." - "..GetRealmName()
 	OmniBarDB.Default = {}
 	for k,v in pairs(defaults) do
 		OmniBarDB.Default[k] = v
 	end
 	OmniBarDB[profile] = nil
-	self:LoadSettings(0)
+	OmniBar_LoadSettings(self, 0)
 end
 
-function OmniBar:SavePosition()
+function OmniBar_SavePosition(self)
 	local point, _, relativePoint, xOfs, yOfs = self:GetPoint()
 	if not self.settings.position then 
 		self.settings.position = {}
@@ -306,7 +317,7 @@ function OmniBar:SavePosition()
 	self.settings.position.yOfs = yOfs
 end
 
-function OmniBar:LoadPosition()
+function OmniBar_LoadPosition(self)
 	self:ClearAllPoints()
 	if self.settings.position then
 		self:SetPoint(self.settings.position.point, UIParent, self.settings.position.relativePoint,
@@ -316,7 +327,7 @@ function OmniBar:LoadPosition()
 	end
 end
 
-function OmniBar:SpellIsEnabled(spellID)
+function OmniBar_IsSpellEnabled(self, spellID)
 	if not spellID then return end
 	-- Check for an explicit rule
 	if self.settings.cooldowns and self.settings.cooldowns[spellID] then
@@ -329,72 +340,87 @@ function OmniBar:SpellIsEnabled(spellID)
 	end
 end
 
-function OmniBar:COMBAT_LOG_EVENT_UNFILTERED(_, event, _, sourceGUID, _, sourceFlags, _,_,_,_,_, spellID)
-	if self.disabled then return end
-	if event == "SPELL_CAST_SUCCESS" and cooldowns[spellID] and bit.band(sourceFlags, 0x00000040) == 0x00000040 then
-		if self:SpellIsEnabled(spellID) then
-			self:AddIcon(spellID, sourceGUID)
-		end
-	end
-end
-
-function OmniBar:PLAYER_ENTERING_WORLD()
-	local _, zone = IsInInstance()
-	self:LoadPosition()
-	self.disabled = (zone == "arena" and self.settings.noArena) or
-		(zone == "pvp" and self.settings.noBattleground) or
-		(zone == "none" and self.settings.noWorld)
-	self:RefreshIcons()
-end
-
-function OmniBar:Center()
-	local clamp = self.settings.center and (self:GetWidth() - UIParent:GetWidth())/2 or 0
+function OmniBar_Center(self)
+	local parentWidth = UIParent:GetWidth()
+	local clamp = self.settings.center and (1 - parentWidth)/2 or 0
 	self:SetClampRectInsets(clamp, -clamp, 0, 0)
+	clamp = self.settings.center and (self.anchor:GetWidth() - parentWidth)/2 or 0
+	self.anchor:SetClampRectInsets(clamp, -clamp, 0, 0)
 end
 
-function OmniBar:RefreshIcons()
-	-- Hide all the icons
-	for i = 1, self.MAX_ICONS do
-		if icons[i].MasqueGroup then
-			--icons[i].MasqueGroup:Delete()
-			icons[i].MasqueGroup = nil
-		end
-		icons[i].cooldown:Hide()
-		icons[i]:Hide()
+function OmniBar_CooldownFinish(self)
+	local icon = self:GetParent()
+	local bar = icon:GetParent():GetParent()
+
+	local flash = icon.flashAnim
+	local newItemGlowAnim = icon.newitemglowAnim
+
+	if flash:IsPlaying() or newItemGlowAnim:IsPlaying() then
+		flash:Stop()
+		newItemGlowAnim:Stop()
 	end
-	active = {}
-	for i = 1, self.MAX_ICONS do
-		icons[i].active = nil
+
+	if not bar.settings.showUnused then
+		for i = 1, #bar.active do
+			if bar.active[i] == icon then
+				table.remove(bar.active, i)
+				break
+			end
+		end
+		icon:Hide()
+	else
+		if bar.settings.unusedAlpha then icon:SetAlpha(bar.settings.unusedAlpha) end
+	end
+	bar:StopMovingOrSizing()
+	OmniBar_Position(bar)
+end
+
+function OmniBar_RefreshIcons(self)
+	-- Hide all the icons
+	for i = 1, self.numIcons do
+		if self.icons[i].MasqueGroup then
+			--self.icons[i].MasqueGroup:Delete()
+			self.icons[i].MasqueGroup = nil
+		end
+		self.icons[i].cooldown:Hide()
+		self.icons[i]:Hide()
+	end
+	wipe(self.active)
+	for i = 1, self.numIcons do
+		self.icons[i].active = nil
 	end
 	if self.disabled then return end
 
 	if self.settings.showUnused then
 		for spellID,_ in pairs(cooldowns) do
-			if self:SpellIsEnabled(spellID) then
-				self:AddIcon(spellID, nil, true)
+			if OmniBar_IsSpellEnabled(self, spellID) then
+				OmniBar_AddIcon(self, spellID, nil, true)
 			end
 		end
 	end
-	self:Position()
+	OmniBar_Position(self)
 end
 
-function OmniBar:AddIcon(spellID, sourceGUID, init, test)
-	if not self:SpellIsEnabled(spellID) then return end
-
-	self:Hide()
+function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
+	if not OmniBar_IsSpellEnabled(self, spellID) then return end
 
 	local i, duplicate = 1
 
 	-- Try to find a free bar
-	while icons[i] and icons[i]:IsVisible() do
+	while self.icons[i] and self.icons[i]:IsVisible() do
 
-		if icons[i].spellID == spellID then
-			-- if it's the same source, reuse the icon
-			if sourceGUID and icons[i].sourceGUID and sourceGUID == icons[i].sourceGUID then
+		if self.icons[i].spellID == spellID then
+			-- use icon if not bound to a sourceGUID
+			if not self.icons[i].sourceGUID then
 				break
 			end
 
-			local start, duration = icons[i].cooldown:GetCooldownTimes()
+			-- if it's the same source, reuse the icon
+			if sourceGUID and sourceGUID == self.icons[i].sourceGUID then
+				break
+			end
+
+			local start, duration = self.icons[i].cooldown:GetCooldownTimes()
 			if start >= 0 and (start+duration)/1000-GetTime() <= 1 then
 				-- just reuse the icon if it is about to expire anyway
 				break
@@ -405,33 +431,40 @@ function OmniBar:AddIcon(spellID, sourceGUID, init, test)
 		end
 
 		i = i + 1
-		if i > self.MAX_ICONS then return end
 	end
-	icons[i].sourceGUID = sourceGUID
-	icons[i].duplicate = duplicate
-	icons[i].icon:SetTexture(cooldowns[spellID].icon)
-	icons[i].spellID = spellID
-	if not icons[i].active then
-		icons[i].added = GetTime()
-		table.insert(active, icons[i])
+
+	-- We couldn't find a spare icon
+	if not self.icons[i] then return end
+
+	self.icons[i].sourceGUID = sourceGUID
+	self.icons[i].duplicate = duplicate
+	self.icons[i].icon:SetTexture(cooldowns[spellID].icon)
+	self.icons[i].spellID = spellID
+	if not self.icons[i].active then
+		self.icons[i].added = GetTime()
+		table.insert(self.active, self.icons[i])
 	end
-	if self.settings.showUnused then
-		icons[i].active = true
+	self.icons[i].active = true
+	--if self.settings.showUnused then
 		-- Keep cooldowns together
-		table.sort(active, function(a,b) return a.spellID == b.spellID and a.added < b.added or a.spellID > b.spellID end)
-	end
+		table.sort(self.active, function(a,b) return a.spellID == b.spellID and a.added < b.added or a.spellID > b.spellID end)
+	--end
 	if not init then
 		-- We don't want duration to be too long if we're just testing
 		local duration = test and math.random(5,30) or cooldowns[spellID].duration
-		icons[i].cooldown:SetCooldown(GetTime(), duration)
-		icons[i].cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
-		icons[i]:SetAlpha(1)
+		self.icons[i].cooldown:SetCooldown(GetTime(), duration)
+		self.icons[i].cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
+		self.icons[i]:SetAlpha(1)
+		if not self.settings.noGlow then
+			self.icons[i].flashAnim:Play()
+			self.icons[i].newitemglowAnim:Play()
+		end
 	end
 
 	-- Masque
 	if Masque then
-		icons[i].MasqueGroup = Masque:Group("OmniBar", cooldowns[spellID].name)
-		icons[i].MasqueGroup:AddButton(icons[i], {
+		self.icons[i].MasqueGroup = Masque:Group("OmniBar", cooldowns[spellID].name)
+		self.icons[i].MasqueGroup:AddButton(self.icons[i], {
 			FloatingBG = false,
 			Icon = icons[i].icon,
 			Cooldown = icons[i].cooldown,
@@ -451,82 +484,77 @@ function OmniBar:AddIcon(spellID, sourceGUID, init, test)
 		})
 	end
 
-	icons[i]:Show()
+	self.icons[i]:Show()
 end
 
-function OmniBar:UpdateIcons()
-	for i = 1, self.MAX_ICONS do
-		-- Set size
-		icons[i]:SetSize(self.settings.size, self.settings.size)
-
+function OmniBar_UpdateIcons(self)
+	for i = 1, self.numIcons do
 		-- Set show text
-		icons[i].cooldown:SetHideCountdownNumbers(self.settings.noCooldownCount and true or false)
-		icons[i].cooldown.noCooldownCount = self.settings.noCooldownCount and true
+		self.icons[i].cooldown:SetHideCountdownNumbers(self.settings.noCooldownCount and true or false)
+		self.icons[i].cooldown.noCooldownCount = self.settings.noCooldownCount and true
 
 		-- Set swipe alpha
-		icons[i].cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
+		self.icons[i].cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
 
 		-- Set border
 		if self.settings.border then
-			icons[i].icon:SetTexCoord(0, 0, 0, 1, 1, 0, 1, 1)
+			self.icons[i].icon:SetTexCoord(0, 0, 0, 1, 1, 0, 1, 1)
 		else
-			icons[i].icon:SetTexCoord(0.07, 0.9, 0.07, 0.9)
+			self.icons[i].icon:SetTexCoord(0.07, 0.9, 0.07, 0.9)
 		end
 
 		-- Set dim
-		icons[i]:SetAlpha(self.settings.unusedAlpha and icons[i].cooldown:GetCooldownTimes() == 0 and
+		self.icons[i]:SetAlpha(self.settings.unusedAlpha and self.icons[i].cooldown:GetCooldownTimes() == 0 and
 			self.settings.unusedAlpha or 1)
 
 		-- Masque
-		if icons[i].MasqueGroup then icons[i].MasqueGroup:ReSkin() end
+		if self.icons[i].MasqueGroup then self.icons[i].MasqueGroup:ReSkin() end
 
 	end
 end
 
-function OmniBar:Test()
+function OmniBar_Test(self)
 	self.disabled = nil
-	self:RefreshIcons()
+	OmniBar_RefreshIcons(self)
 	for k,v in pairs(cooldowns) do
-		self:AddIcon(k, nil, nil, true)
+		OmniBar_AddIcon(self, k, nil, nil, true)
 	end
 end
 
-function OmniBar:Position()
-	if #active == 0 then
+function OmniBar_Position(self)
+	local numActive = #self.active
+	if numActive == 0 then
 		-- Show the anchor if needed
-		if self.settings.locked then
-			self:Hide()
-		else
-			self:Show()
-		end
+		OmniBar_ShowAnchor(self)
 		return
 	end
-	local count, rows, numActive = 0, 1, #active
+	local count, rows = 0, 1
 	local grow = self.settings.growUpward and 1 or -1
 	local padding = self.settings.padding and self.settings.padding or 0
 	for i = 1, numActive do
 		if self.settings.locked then
-			active[i]:EnableMouse(false)
+			self.active[i]:EnableMouse(false)
 		else
-			active[i]:EnableMouse(true)
+			self.active[i]:EnableMouse(true)
 		end
-		active[i]:ClearAllPoints()
+		self.active[i]:ClearAllPoints()
 		local columns = self.settings.columns and self.settings.columns > 0 and self.settings.columns < numActive and
 			self.settings.columns or numActive
 		if i > 1 then
 			count = count + 1
 			if count >= columns then
-				active[i]:SetPoint("CENTER", OmniBar, "CENTER", (-self.settings.size-padding)*(columns-1)/2, (OmniBar.settings.size+padding)*rows*grow)
+				self.active[i]:SetPoint("CENTER", OmniBarIcons, "CENTER", (-BASE_ICON_SIZE-padding)*(columns-1)/2, (BASE_ICON_SIZE+padding)*rows*grow)
 				count = 0
 				rows = rows + 1
 			else
-				active[i]:SetPoint("TOPLEFT", active[i-1], "TOPRIGHT", padding, 0)
+				self.active[i]:SetPoint("TOPLEFT", self.active[i-1], "TOPRIGHT", padding, 0)
 			end
 			
 		else
-			active[i]:SetPoint("CENTER", OmniBar, "CENTER", (-self.settings.size-padding)*(columns-1)/2, 0)
+			self.active[i]:SetPoint("CENTER", OmniBarIcons, "CENTER", (-BASE_ICON_SIZE-padding)*(columns-1)/2, 0)
 		end
 	end
+	OmniBar_ShowAnchor(self)
 end
 
 SLASH_OmniBar1 = "/ob"
@@ -536,20 +564,20 @@ SlashCmdList.OmniBar = function(msg)
 
 	if cmd == "lock" or cmd == "unlock" then
 		OmniBar.settings.locked = cmd == "lock" and true or false
-		OmniBar:Position()
+		OmniBar_Position(OmniBar)
 		if OmniBarOptionsPanelLock then OmniBarOptionsPanelLock:SetChecked(OmniBar.settings.locked) end
-		local status = OmniBar.settings.locked and L["Locked"] or L["Unlocked"]
-		DEFAULT_CHAT_FRAME:AddMessage("|cff33ff99OmniBar|r: " .. status)
 
 	elseif cmd == "reset" then
 		StaticPopup_Show("OMNIBAR_CONFIRM_RESET")
 
 	elseif cmd == "test" then
-		OmniBar:Test()
+		OmniBar_Test(OmniBar)
 
 	else
-		InterfaceOptionsFrame_OpenToCategory(addonName)
-		InterfaceOptionsFrame_OpenToCategory(addonName)
+		if LoadAddOn("OmniBar_Options") then
+			InterfaceOptionsFrame_OpenToCategory(addonName)
+			InterfaceOptionsFrame_OpenToCategory(addonName)
+		end
 
 	end
 

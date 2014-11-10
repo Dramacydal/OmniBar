@@ -7,5 +7,4 @@
 ## SavedVariables: OmniBarDB
 
 localization.lua
-OmniBar.lua
-OmniBarOptions.lua
+OmniBar.xml

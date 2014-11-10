@@ -1,0 +1,10 @@
+## Interface: 60000
+## Title: OmniBar Options
+## Notes: Options Panel for OmniBar (LoadOnDemand)
+## Version: @project-version@
+## Author: Jordon
+## Dependencies: OmniBar
+## LoadOnDemand: 1
+
+localization.lua
+OmniBar_Options.xml
