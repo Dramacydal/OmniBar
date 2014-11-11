@@ -21,6 +21,7 @@ local cooldowns = {
 	[108194] = { default = false, duration = 30,  class = "DEATHKNIGHT" }, -- Asphyxiate
 	[642]    = { default = false, duration = 300, class = "PALADIN"     }, -- Divine Shield
 	[853]    = { default = false, duration = 60,  class = "PALADIN"     }, -- Hammer of Justice
+		[105593] = { duration = 30, class = "PALADIN", parent = 853     }, -- Fist of Justice
 	[1022]   = { default = false, duration = 300, class = "PALADIN"     }, -- Hand of Protection
 	[1044]   = { default = false, duration = 25,  class = "PALADIN"     }, -- Hand of Freedom
 	[6940]   = { default = false, duration = 120, class = "PALADIN"     }, -- Hand of Sacrifice
@@ -28,7 +29,6 @@ local cooldowns = {
 	[31821]  = { default = false, duration = 180, class = "PALADIN"     }, -- Devotion Aura
 	[31884]  = { default = false, duration = 120, class = "PALADIN"     }, -- Avenging Wrath
 	[96231]  = { default = true,  duration = 15,  class = "PALADIN"     }, -- Rebuke
-	[105593] = { default = false, duration = 30,  class = "PALADIN"     }, -- Fist of Justice
 	[114039] = { default = false, duration = 30,  class = "PALADIN"     }, -- Hand of Purity
 	[871]    = { default = false, duration = 180, class = "WARRIOR"     }, -- Shield Wall
 	[1719]   = { default = false, duration = 180, class = "WARRIOR"     }, -- Recklessness
@@ -59,29 +59,37 @@ local cooldowns = {
 	[64044]  = { default = false, duration = 45,  class = "PRIEST"      }, -- Psychic Horror
 	[6360]   = { default = false, duration = 25,  class = "WARLOCK"     }, -- Whiplash
 	[19505]  = { default = false, duration = 15,  class = "WARLOCK"     }, -- Devour Magic (Felhunter)
-	[19647]  = { default = true,  duration = 24,  class = "WARLOCK"     }, -- Spell Lock (Felhunter)
+	[119910] = { default = true,  duration = 24,  class = "WARLOCK"     }, -- Spell Lock (Felhunter)
+		[132409] = { duration = 24, class = "WARLOCK", parent = 119910  }, -- Spell Lock (Grimoire of Sacrifice)
+		[115781] = { duration = 24, class = "WARLOCK", parent = 119910  }, -- Optical Blast (Observer)
+	[111859] = { default = false, duration = 120, class = "WARLOCK"     }, -- Grimoire: Imp
+	[111896] = { default = false, duration = 120, class = "WARLOCK"     }, -- Grimoire: Succubus
+	[111897] = { default = true,  duration = 120, class = "WARLOCK"     }, -- Grimoire: Felhunter
 	[48020]  = { default = false, duration = 26,  class = "WARLOCK"     }, -- Demonic Portal
 	[115284] = { default = false, duration = 15,  class = "WARLOCK"     }, -- Clone Magic (Observer)
 	[115770] = { default = false, duration = 25,  class = "WARLOCK"     }, -- Fellash
-	[115781] = { default = true,  duration = 24,  class = "WARLOCK"     }, -- Optic Blast
 	[8143]   = { default = false, duration = 60,  class = "SHAMAN"      }, -- Tremor Totem
 	[8177]   = { default = false, duration = 25,  class = "SHAMAN"      }, -- Grounding Totem
 	[30823]  = { default = false, duration = 60,  class = "SHAMAN"      }, -- Shamanistic Rage
 	[51490]  = { default = false, duration = 45,  class = "SHAMAN"      }, -- Thunderstorm
 	[51514]  = { default = false, duration = 45,  class = "SHAMAN"      }, -- Hex
 	[57994]  = { default = true,  duration = 12,  class = "SHAMAN"      }, -- Wind Shear
+	[108269] = { default = false, duration = 45,  class = "SHAMAN"      }, -- Capacitor Totem
 	[108271] = { default = false, duration = 90,  class = "SHAMAN"      }, -- Astral Shift
+	[108273] = { default = false, duration = 60,  class = "SHAMAN"      }, -- Windwalk Totem
+	[108285] = { default = false, duration = 180, class = "SHAMAN"      }, -- Call of the Elements
 	[1499]   = { default = false, duration = 30,  class = "HUNTER"      }, -- Freezing Trap
 	[19263]  = { default = false, duration = 180, class = "HUNTER"      }, -- Deterrence
 	[19386]  = { default = false, duration = 45,  class = "HUNTER"      }, -- Wyvern Sting
 	[19574]  = { default = false, duration = 60,  class = "HUNTER"      }, -- Bestial Wrath
-	[41084]  = { default = true,  duration = 24,  class = "HUNTER"      }, -- Silencing Shot
 	[147362] = { default = true,  duration = 24,  class = "HUNTER"      }, -- Counter Shot
 	[66]     = { default = false, duration = 300, class = "MAGE"        }, -- Invisibility
 	[1953]   = { default = false, duration = 15,  class = "MAGE"        }, -- Blink
 	[2139]   = { default = true,  duration = 24,  class = "MAGE"        }, -- Counterspell
 	[11958]  = { default = false, duration = 180, class = "MAGE"        }, -- Cold Snap
+	[12043]  = { default = false, duration = 90,  class = "MAGE"        }, -- Presence of Mind
 	[12472]  = { default = false, duration = 180, class = "MAGE"        }, -- Icy Veins
+	[31661]  = { default = false, duration = 20,  class = "MAGE"        }, -- Dragon's Breath
 	[44572]  = { default = false, duration = 30,  class = "MAGE"        }, -- Deep Freeze
 	[45438]  = { default = false, duration = 300, class = "MAGE"        }, -- Ice Block
 	[102051] = { default = false, duration = 20,  class = "MAGE"        }, -- Frostjaw
@@ -110,10 +118,44 @@ local cooldowns = {
 	[137562] = { default = false, duration = 120, class = "MONK"        }, -- Nimble Brew
 }
 
+local resets = {
+	--[[ Grimoire of Sacrifice
+	     - Spell Lock
+	  ]]
+	[108503] = { 119910 },
+
+	--[[ Summon Felhunter
+	     - Spell Lock
+	  ]]
+	[691] = { 119910 },
+
+	--[[ Cold Snap
+	     - Ice Block
+	     - Presence of Mind
+	     - Dragon's Breath
+	  ]]
+	[11958] = { 45438, 12043, 31661 },
+
+	--[[ Preparation
+	     - Sprint
+	     - Vanish
+	     - Evasion
+	  ]]
+	[14185] = { 2983, 1856, 5277 },
+
+	--[[ Call of the Elements
+	     - Tremor Totem
+	     - Grounding Tote
+	     - Capacitor Totem
+	     - Windwalk Totem
+	  ]]
+	[108285] = { 8143, 8177, 108269, 108273 },
+}
+
 -- Defaults
 local defaults = {
 	size            = 40,
-	columns         = 9,
+	columns         = 8,
 	padding         = 2,
 	locked          = false,
 	center          = false,
@@ -229,9 +271,21 @@ function OmniBar_OnEvent(self, event, ...)
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local _, event, _, sourceGUID, _, sourceFlags, _,_,_,_,_, spellID = ...
 		if self.disabled then return end
-		if event == "SPELL_CAST_SUCCESS" and cooldowns[spellID] and bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) ~= 0 then
-			if OmniBar_IsSpellEnabled(self, spellID) then
-				OmniBar_AddIcon(self, spellID, sourceGUID)
+		if event == "SPELL_CAST_SUCCESS" and bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) ~= 0 then
+			if cooldowns[spellID] then OmniBar_AddIcon(self, spellID, sourceGUID) end
+
+			-- Check if we need to reset any cooldowns
+			if resets[spellID] then
+				for i = 1, #self.active do
+					if self.active[i].sourceGUID and self.active[i].sourceGUID == sourceGUID and self.active[i].cooldown:IsVisible() then
+						-- cooldown belongs to this source
+						for j = 1, #resets[spellID] do
+							if resets[spellID][j] == self.active[i].spellID then
+								self.active[i].cooldown:Hide()
+							end
+						end
+					end
+				end
 			end
 		end
 
@@ -402,6 +456,10 @@ function OmniBar_RefreshIcons(self)
 end
 
 function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
+	-- Check for parent spellID
+	local originalSpellID = spellID
+	if cooldowns[spellID].parent then spellID = cooldowns[spellID].parent end
+
 	if not OmniBar_IsSpellEnabled(self, spellID) then return end
 
 	local i, duplicate = 1
@@ -451,7 +509,7 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 	--end
 	if not init then
 		-- We don't want duration to be too long if we're just testing
-		local duration = test and math.random(5,30) or cooldowns[spellID].duration
+		local duration = test and math.random(5,30) or cooldowns[originalSpellID].duration
 		self.icons[i].cooldown:SetCooldown(GetTime(), duration)
 		self.icons[i].cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
 		self.icons[i]:SetAlpha(1)

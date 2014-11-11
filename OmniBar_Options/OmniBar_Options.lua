@@ -161,38 +161,40 @@ local function CreateSub(name)
 
 	local index, parent = 1
 	for spellID, cooldown in pairs(OmniBar.cooldowns) do
-		if cooldown.class == name then
-			local spell = CreateFrame("CheckButton", "OmniBarOptionsPanel"..subIndex.."Item"..index, OptionsPanelFrame, "OptionsCheckButtonTemplate")
-			_G["OmniBarOptionsPanel"..subIndex.."Item"..index.."Text"]:SetText(GetSpellInfo(spellID))
-			spell:SetScript("OnClick", function(self)
-				if not OmniBar.settings.cooldowns[spellID] then OmniBar.settings.cooldowns[spellID] = {} end
-				local enabled = self:GetChecked()
-				OmniBar.settings.cooldowns[spellID].enabled = enabled
-				if enabled then OmniBar_CreateIcon(OmniBar) end
-				OmniBar_RefreshIcons(OmniBar)
-				OmniBar_UpdateIcons(OmniBar)
-				local i = 1
-				while _G["OmniBarOptionsPanel"..i] do
-					_G["OmniBarOptionsPanel"..i]:refresh()
-					i = i + 1
-				end
-			end)
-			if index > 1 then
-				-- Split into columns if we're showing all cooldowns
-				if (index-1) % 3 == 0 then
-					spell:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -2)
-					parent = spell
+		if not cooldown.parent then -- make sure it isn't a child
+			if cooldown.class == name then
+				local spell = CreateFrame("CheckButton", "OmniBarOptionsPanel"..subIndex.."Item"..index, OptionsPanelFrame, "OptionsCheckButtonTemplate")
+				_G["OmniBarOptionsPanel"..subIndex.."Item"..index.."Text"]:SetText(GetSpellInfo(spellID))
+				spell:SetScript("OnClick", function(self)
+					if not OmniBar.settings.cooldowns[spellID] then OmniBar.settings.cooldowns[spellID] = {} end
+					local enabled = self:GetChecked()
+					OmniBar.settings.cooldowns[spellID].enabled = enabled
+					if enabled then OmniBar_CreateIcon(OmniBar) end
+					OmniBar_RefreshIcons(OmniBar)
+					OmniBar_UpdateIcons(OmniBar)
+					local i = 1
+					while _G["OmniBarOptionsPanel"..i] do
+						_G["OmniBarOptionsPanel"..i]:refresh()
+						i = i + 1
+					end
+				end)
+				if index > 1 then
+					-- Split into columns if we're showing all cooldowns
+					if (index-1) % 3 == 0 then
+						spell:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -2)
+						parent = spell
+					else
+						spell:SetPoint("TOPLEFT", left, "TOPLEFT", 190, 0)
+					end
 				else
-					spell:SetPoint("TOPLEFT", left, "TOPLEFT", 190, 0)
+					spell:SetPoint("TOPLEFT", 24, -24)
+					parent = spell
 				end
-			else
-				spell:SetPoint("TOPLEFT", 24, -24)
-				parent = spell
+				left = spell
+				index = index + 1
+				spell.spellID = spellID
+				table.insert(OptionsPanelFrame.spells, spell)
 			end
-			left = spell
-			index = index + 1
-			spell.spellID = spellID
-			table.insert(OptionsPanelFrame.spells, spell)
 		end
 	end
 	
