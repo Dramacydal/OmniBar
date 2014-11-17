@@ -39,7 +39,6 @@ local cooldowns = {
 	[18499]  = { default = false, duration = 30,  class = "WARRIOR" },     -- Berserker Rage
 	[23920]  = { default = false, duration = 20,  class = "WARRIOR" },     -- Shield Reflect
 	[46968]  = { default = false, duration = 20,  class = "WARRIOR" },     -- Shockwave
-	[102060] = { default = true,  duration = 40,  class = "WARRIOR" },     -- Disrupting Shout
 	[114028] = { default = false, duration = 30,  class = "WARRIOR" },     -- Mass Shield Reflect
 	[114029] = { default = false, duration = 30,  class = "WARRIOR" },     -- Safeguard
 	[118000] = { default = false, duration = 60,  class = "WARRIOR" },     -- Dragon Roar
