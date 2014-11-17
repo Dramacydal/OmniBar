@@ -322,9 +322,19 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="$parentGlow" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="$parentTrackMultiple" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentShowWorld" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.setFunc = OmniBarOptionsPanelTrackMultiple_Update
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentGlow" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentTrackMultiple" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 				<Scripts>
 					<OnLoad>

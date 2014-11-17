@@ -122,7 +122,7 @@
 				OmniBar_Position(bar)
 			</OnShow>
 			<OnHide>
-				self.active = nil
+				self.added = nil
 			</OnHide>
 			<OnMouseDown>
 				local bar = self:GetParent():GetParent()

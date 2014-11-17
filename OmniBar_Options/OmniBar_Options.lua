@@ -45,6 +45,9 @@ function OmniBarOptionsPanel_OnLoad(self)
 	OmniBarOptionsPanelShowWorldText:SetText(L.SHOW_IN_WORLD)
 	OmniBarOptionsPanelShowWorld.tooltipText = L.SHOW_IN_WORLD
 	OmniBarOptionsPanelShowWorld.tooltipRequirement = L.SHOW_IN_WORLD_TOOLTIP
+	OmniBarOptionsPanelTrackMultipleText:SetText(L.TRACK_MULTIPLE_PLAYERS)
+	OmniBarOptionsPanelTrackMultiple.tooltipText = L.TRACK_MULTIPLE_PLAYERS
+	OmniBarOptionsPanelTrackMultiple.tooltipRequirement = L.TRACK_MULTIPLE_PLAYERS_TOOLTIP
 	OmniBarOptionsPanelGlowText:SetText(L.GLOW_ICONS)
 	OmniBarOptionsPanelGlow.tooltipText = L.GLOW_ICONS
 	OmniBarOptionsPanelGlow.tooltipRequirement = L.GLOW_ICONS_TOOLTIP
@@ -132,6 +135,11 @@ function OmniBarOptionsPanelShowWorld_Update(value)
 	OmniBar_OnEvent(OmniBar, "PLAYER_ENTERING_WORLD")
 end
 
+function OmniBarOptionsPanelTrackMultiple_Update(value)
+	OmniBar.settings.noMultiple = value == "0"
+	OmniBar_OnEvent(OmniBar, "PLAYER_ENTERING_WORLD")
+end
+
 function OmniBarOptionsPanelGlow_Update(value)
 	OmniBar.settings.noGlow = value == "0"
 end
@@ -188,6 +196,7 @@ OmniBarOptions.refresh = function()
 	OmniBarOptionsPanelShowArena:SetChecked(not OmniBar.settings.noArena)
 	OmniBarOptionsPanelShowBattleground:SetChecked(not OmniBar.settings.noBattleground)
 	OmniBarOptionsPanelShowWorld:SetChecked(not OmniBar.settings.noWorld)
+	OmniBarOptionsPanelTrackMultiple:SetChecked(not OmniBar.settings.noMultiple)
 	OmniBarOptionsPanelGlow:SetChecked(not OmniBar.settings.noGlow)
 	OmniBarOptionsPanelSizeSlider:SetValue(OmniBar.settings.size)
 	OmniBarOptionsPanelPaddingSlider:SetValue(OmniBar.settings.padding or 0)

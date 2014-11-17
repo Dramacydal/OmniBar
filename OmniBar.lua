@@ -170,6 +170,7 @@ local defaults = {
 	noArena         = false,
 	noBattleground  = false,
 	noWorld         = false,
+	noMultiple      = false,
 	noGlow          = false,
 }
 
@@ -333,15 +334,17 @@ function OmniBar_OnEvent(self, event, ...)
 			if self:IsEventRegistered("ARENA_PREP_OPPONENT_SPECIALIZATIONS") then self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS") end
 		end
 		OmniBar_RefreshIcons(self)
+		OmniBar_UpdateIcons(self)
 
 	elseif event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" or event == "ARENA_OPPONENT_UPDATE" then
 		for i = 1, MAX_ARENA_ENEMIES do
-			if self.detected[i] then return end
-			local specID = GetArenaOpponentSpec(i)
-			if specID and specID > 0 then
-				local class = select(7, GetSpecializationInfoByID(specID))
-				OmniBar_AddIconsByClass(self, class)
-				self.detected[i] = class
+			if not self.detected[i] then
+				local specID = GetArenaOpponentSpec(i)
+				if specID and specID > 0 then
+					local class = select(7, GetSpecializationInfoByID(specID))
+					OmniBar_AddIconsByClass(self, class)
+					self.detected[i] = class
+				end
 			end
 		end
 
@@ -362,7 +365,6 @@ function OmniBar_OnEvent(self, event, ...)
 	end
 
 end
-
 
 function OmniBar_LoadSettings(self, specific)
 	if (not OmniBarDB) or (not OmniBarDB.version) or OmniBarDB.version ~= SETTINGS_VERSION then
@@ -503,9 +505,7 @@ function OmniBar_RefreshIcons(self)
 		self.icons[i]:Hide()
 	end
 	wipe(self.active)
-	for i = 1, self.numIcons do
-		self.icons[i].active = nil
-	end
+
 	if self.disabled then return end
 
 	if self.settings.showUnused and not self.settings.adaptive then
@@ -525,50 +525,62 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 
 	if not OmniBar_IsSpellEnabled(self, spellID) then return end
 
-	local i = 1
+	local icon, duplicate
 
-	-- Try to find a free icon
-	while self.icons[i] and self.icons[i]:IsVisible() do
-
-		if self.icons[i].spellID == spellID then
+	-- Try to reuse a visible frame
+	for i = 1, #self.active do
+		if self.active[i].spellID == spellID then
+			duplicate = true
 			-- check if we can use this icon, but not when initializing arena opponents
 			if not init or self.zone ~= "arena" then
 				-- use icon if not bound to a sourceGUID
-				if not self.icons[i].sourceGUID then
+				if not self.active[i].sourceGUID then
+					duplicate = nil
+					icon = self.active[i]
 					break
 				end
 
 				-- if it's the same source, reuse the icon
-				if sourceGUID and sourceGUID == self.icons[i].sourceGUID then
+				if sourceGUID and sourceGUID == self.active[i].sourceGUID then
+					duplicate = nil
+					icon = self.active[i]
 					break
 				end
 
 				-- recycle soon-to-expire icons
 				--[[if self.zone ~= "arena" then
-					local start, duration = self.icons[i].cooldown:GetCooldownTimes()
+					local start, duration = self.active[i].cooldown:GetCooldownTimes()
 					if start >= 0 and (start+duration)/1000-GetTime() <= 1 then
+						duplicate = nil
+						icon = self.active[i]
 						break
 					end
 				end]]
-
 			end
 		end
-		-- we couldn't use this icon, continue checking
-		i = i + 1
-		
 	end
 
-	-- We couldn't find a spare icon
-	if not self.icons[i] then return end
-
-	self.icons[i].sourceGUID = sourceGUID
-	self.icons[i].icon:SetTexture(cooldowns[spellID].icon)
-	self.icons[i].spellID = spellID
-	if not self.icons[i].active then
-		self.icons[i].added = GetTime()
-		table.insert(self.active, self.icons[i])
+	-- We couldn't find a visible frame to reuse, try to find an unused
+	if not icon then
+		if self.settings.noMultiple and duplicate then return end
+		for i = 1, #self.icons do
+			if not self.icons[i].added then
+				icon = self.icons[i]
+				break
+			end
+		end		
 	end
-	self.icons[i].active = true
+
+	-- We couldn't find a frame to use
+	if not icon then return end
+
+	icon.sourceGUID = sourceGUID
+	icon.icon:SetTexture(cooldowns[spellID].icon)
+	icon.spellID = spellID
+	if not icon.added then
+		icon.added = GetTime()
+		table.insert(self.active, icon)
+	end
 	--if self.settings.showUnused then
 		-- Keep cooldowns together
 		table.sort(self.active, function(a,b) return a.spellID == b.spellID and a.added < b.added or a.spellID > b.spellID end)
@@ -576,28 +588,28 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 	if not init then
 		-- We don't want duration to be too long if we're just testing
 		local duration = test and math.random(5,30) or cooldowns[originalSpellID].duration
-		self.icons[i].cooldown:SetCooldown(GetTime(), duration)
-		self.icons[i].cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
-		self.icons[i]:SetAlpha(1)
+		icon.cooldown:SetCooldown(GetTime(), duration)
+		icon.cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
+		icon:SetAlpha(1)
 		if not self.settings.noGlow then
-			self.icons[i].flashAnim:Play()
-			self.icons[i].newitemglowAnim:Play()
+			icon.flashAnim:Play()
+			icon.newitemglowAnim:Play()
 		end
 	end
 
 	-- Masque
 	if Masque then
-		self.icons[i].MasqueGroup = Masque:Group("OmniBar", cooldowns[spellID].name)
-		self.icons[i].MasqueGroup:AddButton(self.icons[i], {
+		icon.MasqueGroup = Masque:Group("OmniBar", cooldowns[spellID].name)
+		icon.MasqueGroup:AddButton(icon, {
 			FloatingBG = false,
-			Icon = self.icons[i].icon,
-			Cooldown = self.icons[i].cooldown,
+			Icon = icon.icon,
+			Cooldown = icon.cooldown,
 			Flash = false,
 			Pushed = false,
-			Normal = self.icons[i]:GetNormalTexture(),
+			Normal = icon:GetNormalTexture(),
 			Disabled = false,
 			Checked = false,
-			Border = _G[self.icons[i]:GetName().."Border"],
+			Border = _G[icon:GetName().."Border"],
 			AutoCastable = false,
 			Highlight = false,
 			Hotkey = false,
@@ -608,7 +620,7 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 		})
 	end
 
-	self.icons[i]:Show()
+	icon:Show()
 end
 
 function OmniBar_UpdateIcons(self)
