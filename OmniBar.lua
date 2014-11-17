@@ -21,7 +21,7 @@ local cooldowns = {
 	[108194] = { default = false, duration = 30,  class = "DEATHKNIGHT" }, -- Asphyxiate
 	[642]    = { default = false, duration = 300, class = "PALADIN" },     -- Divine Shield
 	[853]    = { default = false, duration = 60,  class = "PALADIN" },     -- Hammer of Justice
-		[105593] = { parent = 853, duration = 30, class = "PALADIN" },     -- Fist of Justice
+	    [105593] = { parent = 853, duration = 30, class = "PALADIN" },     -- Fist of Justice
 	[1022]   = { default = false, duration = 300, class = "PALADIN" },     -- Hand of Protection
 	[1044]   = { default = false, duration = 25,  class = "PALADIN" },     -- Hand of Freedom
 	[6940]   = { default = false, duration = 120, class = "PALADIN" },     -- Hand of Sacrifice
@@ -59,15 +59,16 @@ local cooldowns = {
 	[64044]  = { default = false, duration = 45,  class = "PRIEST" },      -- Psychic Horror
 	[6360]   = { default = false, duration = 25,  class = "WARLOCK" },     -- Whiplash
 	[19505]  = { default = false, duration = 15,  class = "WARLOCK" },     -- Devour Magic (Felhunter)
-	[119910] = { default = true,  duration = 24,  class = "WARLOCK" },     -- Spell Lock (Felhunter)
-		[132409] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Spell Lock (Grimoire of Sacrifice)
-		[115781] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Optical Blast (Observer)
+	[48020]  = { default = false, duration = 26,  class = "WARLOCK" },     -- Demonic Portal
+	[119910] = { default = true,  duration = 24,  class = "WARLOCK" },     -- Spell Lock (Felhunter).
+	    [115781] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Optical Blast (Observer)
+	    [132409] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Spell Lock (Grimoire of Sacrifice)
 	[111859] = { default = false, duration = 120, class = "WARLOCK" },     -- Grimoire: Imp
 	[111896] = { default = false, duration = 120, class = "WARLOCK" },     -- Grimoire: Succubus
 	[111897] = { default = true,  duration = 120, class = "WARLOCK" },     -- Grimoire: Felhunter
-	[48020]  = { default = false, duration = 26,  class = "WARLOCK" },     -- Demonic Portal
 	[115284] = { default = false, duration = 15,  class = "WARLOCK" },     -- Clone Magic (Observer)
 	[115770] = { default = false, duration = 25,  class = "WARLOCK" },     -- Fellash
+	[171138] = { default = false, duration = 24,  class = "WARLOCK" },     -- Shadow Lock (Doomguard)
 	[8143]   = { default = false, duration = 60,  class = "SHAMAN" },      -- Tremor Totem
 	[8177]   = { default = false, duration = 25,  class = "SHAMAN" },      -- Grounding Totem
 	[30823]  = { default = false, duration = 60,  class = "SHAMAN" },      -- Shamanistic Rage
