@@ -320,18 +320,33 @@ function OmniBar_OnEvent(self, event, ...)
 		self.zone = zone
 		if self.settings.showUnused and self.settings.adaptive then
 			if zone == "arena" then
-				if self:IsEventRegistered("UNIT_TARGET") then self:UnregisterEvent("UNIT_TARGET") end
-				if not self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then self:RegisterEvent("ARENA_OPPONENT_UPDATE") end
-				if not self:IsEventRegistered("ARENA_PREP_OPPONENT_SPECIALIZATIONS") then self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS") end
+				if self:IsEventRegistered("PLAYER_TARGET_CHANGED") then
+					self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+					self:UnregisterEvent("PLAYER_REGEN_DISABLED")
+				end
+				if not self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then
+					self:RegisterEvent("ARENA_OPPONENT_UPDATE")
+					self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+				end
 			else
-				if self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then self:UnregisterEvent("ARENA_OPPONENT_UPDATE") end
-				if self:IsEventRegistered("ARENA_PREP_OPPONENT_SPECIALIZATIONS") then self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS") end
-				if not self:IsEventRegistered("UNIT_TARGET") then self:RegisterEvent("UNIT_TARGET") end
+				if self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then
+					self:UnregisterEvent("ARENA_OPPONENT_UPDATE")
+					self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+				end
+				if not self:IsEventRegistered("PLAYER_TARGET_CHANGED") then
+					self:RegisterEvent("PLAYER_TARGET_CHANGED")
+					self:RegisterEvent("PLAYER_REGEN_DISABLED")
+				end
 			end
 		else
-			if self:IsEventRegistered("UNIT_TARGET") then self:UnregisterEvent("UNIT_TARGET") end
-			if self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then self:UnregisterEvent("ARENA_OPPONENT_UPDATE") end
-			if self:IsEventRegistered("ARENA_PREP_OPPONENT_SPECIALIZATIONS") then self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS") end
+			if self:IsEventRegistered("PLAYER_TARGET_CHANGED") then
+				self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+				self:UnregisterEvent("PLAYER_REGEN_DISABLED")
+			end
+			if self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then
+				self:UnregisterEvent("ARENA_OPPONENT_UPDATE")
+				self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+			end
 		end
 		OmniBar_RefreshIcons(self)
 		OmniBar_UpdateIcons(self)
@@ -348,10 +363,9 @@ function OmniBar_OnEvent(self, event, ...)
 			end
 		end
 
-	elseif event == "UNIT_TARGET" then
-		if not InCombatLockdown() then return end -- only add icons when we're in combat
-		local unit = ...
-		if unit ~= "player" then return end -- only add our targets
+	elseif event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_REGEN_DISABLED" then
+		-- only add icons when we're in combat
+		if event == "PLAYER_TARGET_CHANGED" and not InCombatLockdown() then return end
 		unit = "playertarget"
 		if UnitIsPlayer(unit) and UnitFactionGroup("player") ~= UnitFactionGroup(unit) then
 			local guid = UnitGUID(unit)
