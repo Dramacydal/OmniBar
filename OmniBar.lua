@@ -480,12 +480,6 @@ function OmniBar_CooldownFinish(self)
 	end
 
 	if not bar.settings.showUnused then
-		for i = 1, #bar.active do
-			if bar.active[i] == icon then
-				table.remove(bar.active, i)
-				break
-			end
-		end
 		icon:Hide()
 	else
 		if bar.settings.unusedAlpha then icon:SetAlpha(bar.settings.unusedAlpha) end
@@ -564,11 +558,11 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 	if not icon then
 		if self.settings.noMultiple and duplicate then return end
 		for i = 1, #self.icons do
-			if not self.icons[i].added then
+			if not self.icons[i]:IsVisible() then
 				icon = self.icons[i]
 				break
 			end
-		end		
+		end
 	end
 
 	-- We couldn't find a frame to use
@@ -577,14 +571,8 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 	icon.sourceGUID = sourceGUID
 	icon.icon:SetTexture(cooldowns[spellID].icon)
 	icon.spellID = spellID
-	if not icon.added then
-		icon.added = GetTime()
-		table.insert(self.active, icon)
-	end
-	--if self.settings.showUnused then
-		-- Keep cooldowns together
-		table.sort(self.active, function(a,b) return a.spellID == b.spellID and a.added < b.added or a.spellID > b.spellID end)
-	--end
+	icon.added = GetTime()
+
 	if not init then
 		-- We don't want duration to be too long if we're just testing
 		local duration = test and math.random(5,30) or cooldowns[originalSpellID].duration
@@ -664,6 +652,10 @@ function OmniBar_Position(self)
 		OmniBar_ShowAnchor(self)
 		return
 	end
+
+	-- Keep cooldowns together
+	table.sort(self.active, function(a,b) return a.spellID == b.spellID and a.added < b.added or a.spellID > b.spellID end)
+
 	local count, rows = 0, 1
 	local grow = self.settings.growUpward and 1 or -1
 	local padding = self.settings.padding and self.settings.padding or 0

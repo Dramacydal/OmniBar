@@ -119,10 +119,17 @@
 		<Scripts>
 			<OnShow>
 				local bar = self:GetParent():GetParent()
+				table.insert(bar.active, self)
 				OmniBar_Position(bar)
 			</OnShow>
 			<OnHide>
-				self.added = nil
+				local bar = self:GetParent():GetParent()
+				for i = 1, #bar.active do
+					if bar.active[i] == self then
+						table.remove(bar.active, i)
+						break
+					end
+				end
 			</OnHide>
 			<OnMouseDown>
 				local bar = self:GetParent():GetParent()
