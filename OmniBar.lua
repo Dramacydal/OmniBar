@@ -16,6 +16,7 @@ local cooldowns = {
 	[49576]  = { default = false, duration = 25,  class = "DEATHKNIGHT" }, -- Death Grip
 	[51052]  = { default = false, duration = 120, class = "DEATHKNIGHT" }, -- Anti-Magic Zone
 	[55233]  = { default = false, duration = 60,  class = "DEATHKNIGHT" }, -- Vampiric Blood
+	[77606]  = { default = false, duration = 60,  class = "DEATHKNIGHT" }, -- Dark Simulacrum
 	[91802]  = { default = true,  duration = 30,  class = "DEATHKNIGHT" }, -- Shambling Rush
 	[96268]  = { default = false, duration = 30,  class = "DEATHKNIGHT" }, -- Death's Advance
 	[108194] = { default = false, duration = 30,  class = "DEATHKNIGHT" }, -- Asphyxiate
