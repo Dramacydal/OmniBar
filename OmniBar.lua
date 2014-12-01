@@ -59,7 +59,9 @@ local cooldowns = {
 	[6360]   = { default = false, duration = 25,  class = "WARLOCK" },     -- Whiplash
 	[19505]  = { default = false, duration = 15,  class = "WARLOCK" },     -- Devour Magic (Felhunter)
 	[48020]  = { default = false, duration = 26,  class = "WARLOCK" },     -- Demonic Portal
-	[119910] = { default = true,  duration = 24,  class = "WARLOCK" },     -- Spell Lock (Felhunter).
+	[119910] = { default = true,  duration = 24,  class = "WARLOCK" },     -- Spell Lock (Command Demon)
+		[19647]  = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Spell Lock (Felhunter)
+		[119911] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Optical Blast (Command Demon)
 	    [115781] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Optical Blast (Observer)
 	    [132409] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Spell Lock (Grimoire of Sacrifice)
 	[111859] = { default = false, duration = 120, class = "WARLOCK" },     -- Grimoire: Imp
