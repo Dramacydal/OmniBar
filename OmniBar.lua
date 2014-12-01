@@ -65,12 +65,14 @@ local cooldowns = {
 		[119911] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Optical Blast (Command Demon)
 	    [115781] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Optical Blast (Observer)
 	    [132409] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Spell Lock (Grimoire of Sacrifice)
+	    [171138] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Shadow Lock (Doomguard)
+	    [171139] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Shadow Lock (Grimoire of Sacrifice)
+	    [171140] = { parent = 119910, duration = 24, class = "WARLOCK" },  -- Shadow Lock (Command Demon)
 	[111859] = { default = false, duration = 120, class = "WARLOCK" },     -- Grimoire: Imp
 	[111896] = { default = false, duration = 120, class = "WARLOCK" },     -- Grimoire: Succubus
 	[111897] = { default = true,  duration = 120, class = "WARLOCK" },     -- Grimoire: Felhunter
 	[115284] = { default = false, duration = 15,  class = "WARLOCK" },     -- Clone Magic (Observer)
 	[115770] = { default = false, duration = 25,  class = "WARLOCK" },     -- Fellash
-	[171138] = { default = false, duration = 24,  class = "WARLOCK" },     -- Shadow Lock (Doomguard)
 	[8143]   = { default = false, duration = 60,  class = "SHAMAN" },      -- Tremor Totem
 	[8177]   = { default = false, duration = 25,  class = "SHAMAN" },      -- Grounding Totem
 	[30823]  = { default = false, duration = 60,  class = "SHAMAN" },      -- Shamanistic Rage
