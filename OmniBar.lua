@@ -38,8 +38,9 @@ local cooldowns = {
 	[6544]   = { default = false, duration = 45,  class = "WARRIOR" },     -- Heroic Leap
 	[6552]   = { default = true,  duration = 15,  class = "WARRIOR" },     -- Pummel
 	[18499]  = { default = false, duration = 30,  class = "WARRIOR" },     -- Berserker Rage
-	[23920]  = { default = false, duration = 20,  class = "WARRIOR" },     -- Shield Reflect
+	[23920]  = { default = false, duration = 25,  class = "WARRIOR" },     -- Shield Reflect
 	[46968]  = { default = false, duration = 20,  class = "WARRIOR" },     -- Shockwave
+	[107570] = { default = false, duration = 30,  class = "WARRIOR" },     -- Storm Bolt
 	[114028] = { default = false, duration = 30,  class = "WARRIOR" },     -- Mass Shield Reflect
 	[114029] = { default = false, duration = 30,  class = "WARRIOR" },     -- Safeguard
 	[118000] = { default = false, duration = 60,  class = "WARRIOR" },     -- Dragon Roar
@@ -103,13 +104,14 @@ local cooldowns = {
 	[408]    = { default = false, duration = 20,  class = "ROGUE" },       -- Kidney Shot
 	[1766]   = { default = true,  duration = 15,  class = "ROGUE" },       -- Kick
 	[1856]   = { default = false, duration = 120, class = "ROGUE" },       -- Vanish
-	[2094]   = { default = false, duration = 180, class = "ROGUE" },       -- Blind
+	[2094]   = { default = false, duration = 120, class = "ROGUE" },       -- Blind
 	[2983]   = { default = false, duration = 60,  class = "ROGUE" },       -- Sprint
 	[5277]   = { default = false, duration = 180, class = "ROGUE" },       -- Evasion
 	[13750]  = { default = false, duration = 180, class = "ROGUE" },       -- Adrenaline Rush
 	[14185]  = { default = false, duration = 300, class = "ROGUE" },       -- Preparation
 	[31224]  = { default = false, duration = 60,  class = "ROGUE" },       -- Cloak of Shadows
 	[36554]  = { default = false, duration = 20,  class = "ROGUE" },       -- Shadow Step
+	[51713]  = { default = false, duration = 60,  class = "ROGUE" },       -- Shadow Dance
 	[74001]  = { default = false, duration = 120, class = "ROGUE" },       -- Combat Readiness
 	[76577]  = { default = false, duration = 180, class = "ROGUE" },       -- Smoke Bomb
 	[115176] = { default = false, duration = 180, class = "MONK" },        -- Zen Meditation
