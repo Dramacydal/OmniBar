@@ -85,6 +85,7 @@ local cooldowns = {
 	[108273] = { default = false, duration = 60,  class = "SHAMAN" },      -- Windwalk Totem
 	[108285] = { default = false, duration = 180, class = "SHAMAN" },      -- Call of the Elements
 	[1499]   = { default = false, duration = 30,  class = "HUNTER" },      -- Freezing Trap
+	    [60192] = { parent = 1499, duration = 30, class = "HUNTER" },      -- Freezing Trap (Trap Launcher)
 	[19263]  = { default = false, duration = 180, class = "HUNTER" },      -- Deterrence
 	[19386]  = { default = false, duration = 45,  class = "HUNTER" },      -- Wyvern Sting
 	[19574]  = { default = false, duration = 60,  class = "HUNTER" },      -- Bestial Wrath
