@@ -119,7 +119,7 @@ local cooldowns = {
 	[115203] = { default = false, duration = 180, class = "MONK" },        -- Fortifying Brew
 	[116705] = { default = true,  duration = 15,  class = "MONK" },        -- Spear Hand Strike
 	[116844] = { default = false, duration = 45,  class = "MONK" },        -- Ring of Peace
-	[116849] = { default = false, duration = 120, class = "MONK" },        -- Life Cocoon
+	[116849] = { default = false, duration = 55,  class = "MONK" },        -- Life Cocoon
 	[119381] = { default = false, duration = 45,  class = "MONK" },        -- Leg Sweep
 	[119996] = { default = false, duration = 25,  class = "MONK" },        -- Transcendence: Transfer
 	[122470] = { default = false, duration = 90,  class = "MONK" },        -- Touch of Karma
