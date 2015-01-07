@@ -119,12 +119,12 @@ end
 
 function OmniBarOptionsPanelHighlightTarget_Update(value)
 	OmniBar.settings.noHighlightTarget = value == "0"
-	OmniBar_UpdateBorder(OmniBar)
+	OmniBar_UpdateBorders(OmniBar)
 end
 
 function OmniBarOptionsPanelHighlightFocus_Update(value)
 	OmniBar.settings.noHighlightFocus = value == "0"
-	OmniBar_UpdateBorder(OmniBar)
+	OmniBar_UpdateBorders(OmniBar)
 end
 
 function OmniBarOptionsPanelUseGlobal_Update(value)

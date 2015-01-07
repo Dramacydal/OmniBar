@@ -133,6 +133,7 @@
 				local bar = self:GetParent():GetParent()
 				table.insert(bar.active, self)
 				OmniBar_Position(bar)
+				OmniBar_UpdateBorders(bar)
 			</OnShow>
 			<OnHide>
 				local bar = self:GetParent():GetParent()

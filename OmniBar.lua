@@ -263,7 +263,7 @@ function OmniBar_AddIconsByClass(self, class)
 	end
 end
 
-function OmniBar_UpdateBorder(self)
+function OmniBar_UpdateBorders(self)
 	for i = 1, #self.active do
 		local border
 		local guid = self.active[i].sourceGUID
@@ -436,8 +436,8 @@ function OmniBar_OnEvent(self, event, ...)
 		end
 
 	elseif event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" or event == "PLAYER_REGEN_DISABLED" then
-		-- draw target border
-		OmniBar_UpdateBorder(self)
+		-- update icon borders
+		OmniBar_UpdateBorders(self)
 
 		-- only add icons when we're in arena
 		if zone ~= "arena" then return end
@@ -574,7 +574,11 @@ function OmniBar_CooldownFinish(self)
 	if not bar.settings.showUnused then
 		icon:Hide()
 	else
-		if bar.settings.unusedAlpha then icon:SetAlpha(bar.settings.unusedAlpha) end
+		if icon.TargetTexture:GetAlpha() == 0 and
+			icon.FocusTexture:GetAlpha() == 0 and
+			bar.settings.unusedAlpha then
+				icon:SetAlpha(bar.settings.unusedAlpha)
+		end
 	end
 	bar:StopMovingOrSizing()
 	OmniBar_Position(bar)
@@ -587,6 +591,10 @@ function OmniBar_RefreshIcons(self)
 			--self.icons[i].MasqueGroup:Delete()
 			self.icons[i].MasqueGroup = nil
 		end
+		self.icons[i].TargetTexture:SetAlpha(0)
+		self.icons[i].FocusTexture:SetAlpha(0)
+		self.icons[i].flash:SetAlpha(0)
+		self.icons[i].NewItemTexture:SetAlpha(0)
 		self.icons[i].cooldown:Hide()
 		self.icons[i]:Hide()
 	end
@@ -602,6 +610,12 @@ function OmniBar_RefreshIcons(self)
 		end
 	end
 	OmniBar_Position(self)
+end
+
+function OmniBar_StartCooldown(self, icon, start)
+	icon.cooldown:SetCooldown(start, icon.duration)
+	icon.cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
+	icon:SetAlpha(1)
 end
 
 function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
@@ -633,15 +647,6 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 					break
 				end
 
-				-- recycle soon-to-expire icons
-				--[[if self.zone ~= "arena" then
-					local start, duration = self.active[i].cooldown:GetCooldownTimes()
-					if start >= 0 and (start+duration)/1000-GetTime() <= 1 then
-						duplicate = nil
-						icon = self.active[i]
-						break
-					end
-				end]]
 			end
 		end
 	end
@@ -660,24 +665,14 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 	-- We couldn't find a frame to use
 	if not icon then return end
 
+	local now = GetTime()
 	icon.class = cooldowns[spellID].class
 	icon.sourceGUID = sourceGUID
-	OmniBar_UpdateBorder(self) -- Refresh the borders since we just attached a GUID
 	icon.icon:SetTexture(cooldowns[spellID].icon)
 	icon.spellID = spellID
-	icon.added = GetTime()
-
-	if not init then
-		-- We don't want duration to be too long if we're just testing
-		local duration = test and math.random(5,30) or cooldowns[originalSpellID].duration
-		icon.cooldown:SetCooldown(GetTime(), duration)
-		icon.cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
-		icon:SetAlpha(1)
-		if not self.settings.noGlow then
-			icon.flashAnim:Play()
-			icon.newitemglowAnim:Play()
-		end
-	end
+	icon.added = now
+	-- We don't want duration to be too long if we're just testing
+	icon.duration = test and math.random(5,30) or cooldowns[originalSpellID].duration
 
 	-- Masque
 	if Masque then
@@ -703,6 +698,16 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 	end
 
 	icon:Show()
+
+	if not init then
+		OmniBar_StartCooldown(self, icon, now)
+		if not self.settings.noGlow then
+			icon.flashAnim:Play()
+			icon.newitemglowAnim:Play()
+		end
+	end
+
+	return icon
 end
 
 function OmniBar_UpdateIcons(self)
