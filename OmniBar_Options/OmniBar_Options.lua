@@ -33,6 +33,12 @@ function OmniBarOptionsPanel_OnLoad(self)
 	OmniBarOptionsPanelShowBorderText:SetText(L.SHOW_BORDER)
 	OmniBarOptionsPanelShowBorder.tooltipText = L.SHOW_BORDER
 	OmniBarOptionsPanelShowBorder.tooltipRequirement = L.SHOW_BORDER_TOOLTIP
+	OmniBarOptionsPanelHighlightTargetText:SetText(L.HIGHLIGHT_TARGET)
+	OmniBarOptionsPanelHighlightTarget.tooltipText = L.HIGHLIGHT_TARGET
+	OmniBarOptionsPanelHighlightTarget.tooltipRequirement = L.HIGHLIGHT_TARGET_TOOLTIP
+	OmniBarOptionsPanelHighlightFocusText:SetText(L.HIGHLIGHT_FOCUS)
+	OmniBarOptionsPanelHighlightFocus.tooltipText = L.HIGHLIGHT_FOCUS
+	OmniBarOptionsPanelHighlightFocus.tooltipRequirement = L.HIGHLIGHT_FOCUS_TOOLTIP
 	OmniBarOptionsPanelUseGlobalText:SetText(L.USE_GLOBAL_SETTINGS)
 	OmniBarOptionsPanelUseGlobal.tooltipText = L.USE_GLOBAL_SETTINGS
 	OmniBarOptionsPanelUseGlobal.tooltipRequirement = L.USE_GLOBAL_SETTINGS_TOOLTIP
@@ -109,6 +115,16 @@ end
 function OmniBarOptionsPanelShowBorder_Update(value)
 	OmniBar.settings.border = value == "1"
 	OmniBar_UpdateIcons(OmniBar)
+end
+
+function OmniBarOptionsPanelHighlightTarget_Update(value)
+	OmniBar.settings.noHighlightTarget = value == "0"
+	OmniBar_UpdateBorder(OmniBar)
+end
+
+function OmniBarOptionsPanelHighlightFocus_Update(value)
+	OmniBar.settings.noHighlightFocus = value == "0"
+	OmniBar_UpdateBorder(OmniBar)
 end
 
 function OmniBarOptionsPanelUseGlobal_Update(value)
@@ -201,6 +217,8 @@ OmniBarOptions.refresh = function()
 	OmniBarOptionsPanelCountdownCount:SetChecked(not OmniBar.settings.noCooldownCount)
 	OmniBarOptionsPanelCenterLock:SetChecked(OmniBar.settings.center)
 	OmniBarOptionsPanelShowBorder:SetChecked(OmniBar.settings.border)
+	OmniBarOptionsPanelHighlightTarget:SetChecked(not OmniBar.settings.noHighlightTarget)
+	OmniBarOptionsPanelHighlightFocus:SetChecked(not OmniBar.settings.noHighlightFocus)
 	OmniBarOptionsPanelShowArena:SetChecked(not OmniBar.settings.noArena)
 	OmniBarOptionsPanelShowRatedBattleground:SetChecked(not OmniBar.settings.noRatedBattleground)
 	OmniBarOptionsPanelShowBattleground:SetChecked(not OmniBar.settings.noBattleground)

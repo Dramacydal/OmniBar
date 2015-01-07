@@ -245,9 +245,29 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentHighlightTarget" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentShowBorder" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.setFunc = OmniBarOptionsPanelHighlightTarget_Update
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="$parentHighlightFocus" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentHighlightTarget" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.setFunc = OmniBarOptionsPanelHighlightFocus_Update
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 			<Frame name="$parentSize" inherits="OmniBarOptionsPanelSlider">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="OmniBarOptionsPanelShowBorder" relativePoint="BOTTOMLEFT">
+					<Anchor point="TOPLEFT" relativeTo="OmniBarOptionsPanelHighlightFocus" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="0"/>
 						</Offset>

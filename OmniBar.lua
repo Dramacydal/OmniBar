@@ -127,6 +127,20 @@ local cooldowns = {
 	[137562] = { default = false, duration = 120, class = "MONK" },        -- Nimble Brew
 }
 
+local order = {
+	["DEATHKNIGHT"] = 1,
+	["PALADIN"] = 2,
+	["WARRIOR"] = 3,
+	["DRUID"] = 4,
+	["PRIEST"] = 5,
+	["WARLOCK"] = 6,
+	["SHAMAN"] = 7,
+	["HUNTER"] = 8,
+	["MAGE"] = 9,
+	["ROGUE"] = 10,
+	["MONK"] = 11,
+}
+
 local resets = {
 	--[[ Grimoire of Sacrifice
 	     - Spell Lock
@@ -169,6 +183,8 @@ local defaults = {
 	locked               = false,
 	center               = false,
 	border               = true,
+	noHighlightTarget    = false,
+	noHighlightFocus     = false,
 	growUpward           = true,
 	showUnused           = false,
 	adaptive             = false,
@@ -220,6 +236,10 @@ for spellID,_ in pairs(cooldowns) do
 	cooldowns[spellID].name = name
 end
 
+local function IsHostilePlayer(unit)
+	return UnitIsPlayer(unit) and UnitFactionGroup("player") ~= UnitFactionGroup(unit)
+end
+
 function OmniBar_ShowAnchor(self)
 	if self.settings.locked or #self.active > 0 then
 		self.anchor:Hide()
@@ -240,6 +260,48 @@ function OmniBar_AddIconsByClass(self, class)
 		if OmniBar_IsSpellEnabled(self, spellID) and spell.class == class then
 			OmniBar_AddIcon(self, spellID, nil, true)
 		end
+	end
+end
+
+function OmniBar_UpdateBorder(self)
+	for i = 1, #self.active do
+		local border
+		local guid = self.active[i].sourceGUID
+		if guid then
+			if not self.settings.noHighlightFocus and guid == UnitGUID("focus") then
+				self.active[i].FocusTexture:SetAlpha(1)
+				border = true
+			else
+				self.active[i].FocusTexture:SetAlpha(0)
+			end
+			if not self.settings.noHighlightTarget and guid == UnitGUID("target") then
+				self.active[i].FocusTexture:SetAlpha(0)
+				self.active[i].TargetTexture:SetAlpha(1)
+				border = true
+			else
+				self.active[i].TargetTexture:SetAlpha(0)
+			end
+		else
+			local class = select(2, UnitClass("focus"))
+			if not self.settings.noHighlightFocus and class and IsHostilePlayer("focus") and class == self.active[i].class then
+				self.active[i].FocusTexture:SetAlpha(1)
+				border = true
+			else
+				self.active[i].FocusTexture:SetAlpha(0)
+			end
+			class = select(2, UnitClass("target"))
+			if not self.settings.noHighlightTarget and class and IsHostilePlayer("target") and class == self.active[i].class then
+				self.active[i].FocusTexture:SetAlpha(0)
+				self.active[i].TargetTexture:SetAlpha(1)
+				border = true
+			else
+				self.active[i].TargetTexture:SetAlpha(0)
+			end
+		end
+
+		-- Set dim
+		self.active[i]:SetAlpha(self.settings.unusedAlpha and self.active[i].cooldown:GetCooldownTimes() == 0 and not border and
+			self.settings.unusedAlpha or 1)
 	end
 end
 
@@ -279,6 +341,8 @@ function OmniBar_OnEvent(self, event, ...)
 
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:RegisterEvent("PLAYER_ENTERING_WORLD")
+		self:RegisterEvent("PLAYER_TARGET_CHANGED")
+		self:RegisterEvent("PLAYER_FOCUS_CHANGED")
 
 		-- Add Options Panel category
 		local frame = CreateFrame("Frame", "OmniBarOptions")
@@ -331,8 +395,7 @@ function OmniBar_OnEvent(self, event, ...)
 		self.zone = zone
 		if self.settings.showUnused and self.settings.adaptive then
 			if zone == "arena" then
-				if self:IsEventRegistered("PLAYER_TARGET_CHANGED") then
-					self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+				if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then
 					self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 				end
 				if not self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then
@@ -344,14 +407,12 @@ function OmniBar_OnEvent(self, event, ...)
 					self:UnregisterEvent("ARENA_OPPONENT_UPDATE")
 					self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 				end
-				if not self:IsEventRegistered("PLAYER_TARGET_CHANGED") then
-					self:RegisterEvent("PLAYER_TARGET_CHANGED")
+				if not self:IsEventRegistered("PLAYER_REGEN_DISABLED") then
 					self:RegisterEvent("PLAYER_REGEN_DISABLED")
 				end
 			end
 		else
-			if self:IsEventRegistered("PLAYER_TARGET_CHANGED") then
-				self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+			if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then
 				self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 			end
 			if self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then
@@ -374,11 +435,17 @@ function OmniBar_OnEvent(self, event, ...)
 			end
 		end
 
-	elseif event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_REGEN_DISABLED" then
+	elseif event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" or event == "PLAYER_REGEN_DISABLED" then
+		-- draw target border
+		OmniBar_UpdateBorder(self)
+
+		-- only add icons when we're in arena
+		if zone ~= "arena" then return end
+
 		-- only add icons when we're in combat
 		if event == "PLAYER_TARGET_CHANGED" and not InCombatLockdown() then return end
 		unit = "playertarget"
-		if UnitIsPlayer(unit) and UnitFactionGroup("player") ~= UnitFactionGroup(unit) then
+		if IsHostilePlayer(unit) then
 			local guid = UnitGUID(unit)
 			local _, class = UnitClass(unit)
 			if class then
@@ -593,7 +660,9 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 	-- We couldn't find a frame to use
 	if not icon then return end
 
+	icon.class = cooldowns[spellID].class
 	icon.sourceGUID = sourceGUID
+	OmniBar_UpdateBorder(self) -- Refresh the borders since we just attached a GUID
 	icon.icon:SetTexture(cooldowns[spellID].icon)
 	icon.spellID = spellID
 	icon.added = GetTime()
@@ -679,7 +748,12 @@ function OmniBar_Position(self)
 	end
 
 	-- Keep cooldowns together
-	table.sort(self.active, function(a,b) return a.spellID == b.spellID and a.added < b.added or a.spellID > b.spellID end)
+	table.sort(self.active, function(a, b)
+		if a.spellID == b.spellID and a.added < b.added then
+			return true
+		end
+		return a.class == b.class and a.spellID < b.spellID or order[a.class] < order[b.class]
+	end)
 
 	local count, rows = 0, 1
 	local grow = self.settings.growUpward and 1 or -1
