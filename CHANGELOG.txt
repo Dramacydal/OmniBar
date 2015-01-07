@@ -1,0 +1,13 @@
+v3.13
+2015-01-07
+	- minor bug fix
+
+v3.12
+2015-01-06
+	- various fixes and improvements
+	- add Highlight Target option
+	- add Highlight Focus option
+	- improve icon sorting function
+	- fix Pain Suppression cooldown
+	- add Show In Rated Battlegrounds option
+	- fix Show In World option
