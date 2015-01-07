@@ -440,7 +440,7 @@ function OmniBar_OnEvent(self, event, ...)
 		OmniBar_UpdateBorders(self)
 
 		-- only add icons when we're in arena
-		if zone ~= "arena" then return end
+		if self.zone ~= "arena" then return end
 
 		-- only add icons when we're in combat
 		if event == "PLAYER_TARGET_CHANGED" and not InCombatLockdown() then return end
