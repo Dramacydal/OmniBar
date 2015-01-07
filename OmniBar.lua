@@ -324,7 +324,7 @@ function OmniBar_OnEvent(self, event, ...)
 		wipe(self.detected)
 		self.disabled = (zone == "arena" and self.settings.noArena) or
 			(zone == "pvp" and self.settings.noBattleground) or
-			(zone == "none" and self.settings.noWorld)
+			(zone ~= "arena" and zone ~= "pvp" and self.settings.noWorld)
 		self.zone = zone
 		if self.settings.showUnused and self.settings.adaptive then
 			if zone == "arena" then
