@@ -39,6 +39,9 @@ function OmniBarOptionsPanel_OnLoad(self)
 	OmniBarOptionsPanelShowArenaText:SetText(L.SHOW_IN_ARENAS)
 	OmniBarOptionsPanelShowArena.tooltipText = L.SHOW_IN_ARENAS
 	OmniBarOptionsPanelShowArena.tooltipRequirement = L.SHOW_IN_ARENAS_TOOLTIP
+	OmniBarOptionsPanelShowRatedBattlegroundText:SetText(L.SHOW_IN_RATED_BATTLEGROUNDS)
+	OmniBarOptionsPanelShowRatedBattleground.tooltipText = L.SHOW_IN_RATED_BATTLEGROUNDS
+	OmniBarOptionsPanelShowRatedBattleground.tooltipRequirement = L.SHOW_IN_RATED_BATTLEGROUNDS_TOOLTIP
 	OmniBarOptionsPanelShowBattlegroundText:SetText(L.SHOW_IN_BATTLEGROUNDS)
 	OmniBarOptionsPanelShowBattleground.tooltipText = L.SHOW_IN_BATTLEGROUNDS
 	OmniBarOptionsPanelShowBattleground.tooltipRequirement = L.SHOW_IN_BATTLEGROUNDS_TOOLTIP
@@ -125,6 +128,11 @@ function OmniBarOptionsPanelShowArena_Update(value)
 	OmniBar_OnEvent(OmniBar, "PLAYER_ENTERING_WORLD")
 end
 
+function OmniBarOptionsPanelShowRatedBattleground_Update(value)
+	OmniBar.settings.noRatedBattleground = value == "0"
+	OmniBar_OnEvent(OmniBar, "PLAYER_ENTERING_WORLD")
+end
+
 function OmniBarOptionsPanelShowBattleground_Update(value)
 	OmniBar.settings.noBattleground = value == "0"
 	OmniBar_OnEvent(OmniBar, "PLAYER_ENTERING_WORLD")
@@ -194,6 +202,7 @@ OmniBarOptions.refresh = function()
 	OmniBarOptionsPanelCenterLock:SetChecked(OmniBar.settings.center)
 	OmniBarOptionsPanelShowBorder:SetChecked(OmniBar.settings.border)
 	OmniBarOptionsPanelShowArena:SetChecked(not OmniBar.settings.noArena)
+	OmniBarOptionsPanelShowRatedBattleground:SetChecked(not OmniBar.settings.noRatedBattleground)
 	OmniBarOptionsPanelShowBattleground:SetChecked(not OmniBar.settings.noBattleground)
 	OmniBarOptionsPanelShowWorld:SetChecked(not OmniBar.settings.noWorld)
 	OmniBarOptionsPanelTrackMultiple:SetChecked(not OmniBar.settings.noMultiple)

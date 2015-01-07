@@ -163,23 +163,24 @@ local resets = {
 
 -- Defaults
 local defaults = {
-	size            = 40,
-	columns         = 8,
-	padding         = 2,
-	locked          = false,
-	center          = false,
-	border          = true,
-	growUpward      = true,
-	showUnused      = false,
-	adaptive        = false,
-	unusedAlpha     = 0.45,
-	swipeAlpha      = 0.65,
-	noCooldownCount = false,
-	noArena         = false,
-	noBattleground  = false,
-	noWorld         = false,
-	noMultiple      = false,
-	noGlow          = false,
+	size                 = 40,
+	columns              = 8,
+	padding              = 2,
+	locked               = false,
+	center               = false,
+	border               = true,
+	growUpward           = true,
+	showUnused           = false,
+	adaptive             = false,
+	unusedAlpha          = 0.45,
+	swipeAlpha           = 0.65,
+	noCooldownCount      = false,
+	noArena              = false,
+	noRatedBattleground  = false,
+	noBattleground       = false,
+	noWorld              = false,
+	noMultiple           = false,
+	noGlow               = false,
 }
 
 local OmniBar
@@ -320,10 +321,12 @@ function OmniBar_OnEvent(self, event, ...)
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		local _, zone = IsInInstance()
+		local rated = IsRatedBattleground()
 		OmniBar_LoadPosition(self)
 		wipe(self.detected)
 		self.disabled = (zone == "arena" and self.settings.noArena) or
-			(zone == "pvp" and self.settings.noBattleground) or
+			(rated and self.settings.noRatedBattleground) or
+			(zone == "pvp" and self.settings.noBattleground and not rated) or
 			(zone ~= "arena" and zone ~= "pvp" and self.settings.noWorld)
 		self.zone = zone
 		if self.settings.showUnused and self.settings.adaptive then
