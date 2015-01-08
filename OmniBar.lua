@@ -455,7 +455,6 @@ function OmniBar_OnEvent(self, event, ...)
 			end
 		end
 	end
-
 end
 
 function OmniBar_LoadSettings(self, specific)
