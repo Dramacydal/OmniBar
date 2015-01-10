@@ -52,6 +52,7 @@ local cooldowns = {
 	[102359] = { default = false, duration = 30,  class = "DRUID" },                         -- Mass Entanglement
 	[106839] = { default = true,  duration = 15,  class = "DRUID", specID = { 103, 104 } },  -- Skull Bash
 	[132469] = { default = false, duration = 30,  class = "DRUID" },                         -- Typhoon
+	[586]    = { default = false, duration = 90,  class = "PRIEST", specID = { 256 } },      -- Fade
 	[8122]   = { default = false, duration = 45,  class = "PRIEST" },                        -- Psychic Scream
 	[15487]  = { default = true,  duration = 45,  class = "PRIEST", specID = { 256, 258 } }, -- Silence
 	[33206]  = { default = false, duration = 120, class = "PRIEST", specID = { 256 } },      -- Pain Suppression
