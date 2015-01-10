@@ -442,7 +442,7 @@ function OmniBar_OnEvent(self, event, ...)
 		if self.zone == "arena" then return end
 
 		-- only add icons if show adaptive is checked
-		if not self.settings.showUnused and not self.settings.adaptive then return end
+		if not self.settings.showUnused or not self.settings.adaptive then return end
 
 		-- only add icons when we're in combat
 		if event == "PLAYER_TARGET_CHANGED" and not InCombatLockdown() then return end
