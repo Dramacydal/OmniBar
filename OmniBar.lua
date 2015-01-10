@@ -763,14 +763,19 @@ function OmniBar_Position(self)
 	end
 
 	-- Keep cooldowns together by class
-	table.sort(self.active, function(a, b)
-		local x, y = ExtractDigits(a.sourceGUID), ExtractDigits(b.sourceGUID)
-		if a.class == b.class then
-			if x < y then return true end
-			if x == y then return a.spellID < b.spellID end
-		end
-		return order[a.class] < order[b.class]
-	end)
+	if self.settings.showUnused then
+		table.sort(self.active, function(a, b)
+			local x, y = ExtractDigits(a.sourceGUID), ExtractDigits(b.sourceGUID)
+			if a.class == b.class then
+				if x < y then return true end
+				if x == y then return a.spellID < b.spellID end
+			end
+			return order[a.class] < order[b.class]
+		end)
+	else
+		-- if we aren't showing unused, just sort by added time
+		table.sort(self.active, function(a, b) return a.added == b.added and a.spellID < b.spellID or a.added < b.added end)
+	end
 
 	local count, rows = 0, 1
 	local grow = self.settings.growUpward and 1 or -1
