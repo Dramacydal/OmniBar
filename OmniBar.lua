@@ -237,7 +237,7 @@ for spellID,_ in pairs(cooldowns) do
 end
 
 local function IsHostilePlayer(unit)
-	return UnitIsPlayer(unit) and UnitFactionGroup("player") ~= UnitFactionGroup(unit)
+	return UnitIsPlayer(unit) and UnitReaction("player", unit) < 4 and not UnitIsPossessed(unit)
 end
 
 function OmniBar_ShowAnchor(self)
@@ -255,12 +255,21 @@ function OmniBar_CreateIcon(self)
 	table.insert(self.icons, f)
 end
 
-function OmniBar_AddIconsByClass(self, class)
+function OmniBar_AddIconsByClass(self, class, sourceGUID)
 	for spellID, spell in pairs(cooldowns) do
 		if OmniBar_IsSpellEnabled(self, spellID) and spell.class == class then
-			OmniBar_AddIcon(self, spellID, nil, true)
+			OmniBar_AddIcon(self, spellID, sourceGUID, true)
 		end
 	end
+end
+
+local function IconIsSource(iconGUID, guid)
+	if not guid then return end
+	if string.len(iconGUID) == 1 then
+		-- arena target
+		return UnitGUID("arena"..iconGUID) == guid
+	end
+	return iconGUID == guid
 end
 
 function OmniBar_UpdateBorders(self)
@@ -268,13 +277,13 @@ function OmniBar_UpdateBorders(self)
 		local border
 		local guid = self.active[i].sourceGUID
 		if guid then
-			if not self.settings.noHighlightFocus and guid == UnitGUID("focus") then
+			if not self.settings.noHighlightFocus and IconIsSource(guid, UnitGUID("focus")) then
 				self.active[i].FocusTexture:SetAlpha(1)
 				border = true
 			else
 				self.active[i].FocusTexture:SetAlpha(0)
 			end
-			if not self.settings.noHighlightTarget and guid == UnitGUID("target") then
+			if not self.settings.noHighlightTarget and IconIsSource(guid, UnitGUID("target")) then
 				self.active[i].FocusTexture:SetAlpha(0)
 				self.active[i].TargetTexture:SetAlpha(1)
 				border = true
@@ -343,6 +352,9 @@ function OmniBar_OnEvent(self, event, ...)
 		self:RegisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterEvent("PLAYER_FOCUS_CHANGED")
+		self:RegisterEvent("PLAYER_REGEN_DISABLED")
+		self:RegisterEvent("ARENA_OPPONENT_UPDATE")
+		self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 
 		-- Add Options Panel category
 		local frame = CreateFrame("Frame", "OmniBarOptions")
@@ -392,44 +404,21 @@ function OmniBar_OnEvent(self, event, ...)
 			(rated and self.settings.noRatedBattleground) or
 			(zone == "pvp" and self.settings.noBattleground and not rated) or
 			(zone ~= "arena" and zone ~= "pvp" and self.settings.noWorld)
-		self.zone = zone
-		if self.settings.showUnused and self.settings.adaptive then
-			if zone == "arena" then
-				if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then
-					self:UnregisterEvent("PLAYER_REGEN_DISABLED")
-				end
-				if not self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then
-					self:RegisterEvent("ARENA_OPPONENT_UPDATE")
-					self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
-				end
-			else
-				if self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then
-					self:UnregisterEvent("ARENA_OPPONENT_UPDATE")
-					self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
-				end
-				if not self:IsEventRegistered("PLAYER_REGEN_DISABLED") then
-					self:RegisterEvent("PLAYER_REGEN_DISABLED")
-				end
-			end
-		else
-			if self:IsEventRegistered("PLAYER_REGEN_DISABLED") then
-				self:UnregisterEvent("PLAYER_REGEN_DISABLED")
-			end
-			if self:IsEventRegistered("ARENA_OPPONENT_UPDATE") then
-				self:UnregisterEvent("ARENA_OPPONENT_UPDATE")
-				self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
-			end
-		end
+		self.zone = zone			
 		OmniBar_RefreshIcons(self)
 		OmniBar_UpdateIcons(self)
+		if zone == "arena" then OmniBar_OnEvent(self, "ARENA_OPPONENT_UPDATE") end
 
 	elseif event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" or event == "ARENA_OPPONENT_UPDATE" then
-		for i = 1, MAX_ARENA_ENEMIES do
+		-- only add icons if show unused is checked
+		if not self.settings.showUnused then return end
+
+		for i = 1, 5 do
 			if not self.detected[i] then
 				local specID = GetArenaOpponentSpec(i)
 				if specID and specID > 0 then
 					local class = select(7, GetSpecializationInfoByID(specID))
-					OmniBar_AddIconsByClass(self, class)
+					OmniBar_AddIconsByClass(self, class, i)
 					self.detected[i] = class
 				end
 			end
@@ -439,11 +428,15 @@ function OmniBar_OnEvent(self, event, ...)
 		-- update icon borders
 		OmniBar_UpdateBorders(self)
 
-		-- only add icons when we're in arena
-		if self.zone ~= "arena" then return end
+		-- we don't need to add in arena
+		if self.zone == "arena" then return end
+
+		-- only add icons if show adaptive is checked
+		if not self.settings.showUnused and not self.settings.adaptive then return end
 
 		-- only add icons when we're in combat
 		if event == "PLAYER_TARGET_CHANGED" and not InCombatLockdown() then return end
+
 		unit = "playertarget"
 		if IsHostilePlayer(unit) then
 			local guid = UnitGUID(unit)
@@ -617,6 +610,7 @@ function OmniBar_StartCooldown(self, icon, start)
 	icon:SetAlpha(1)
 end
 
+
 function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 	-- Check for parent spellID
 	local originalSpellID = spellID
@@ -640,7 +634,7 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 				end
 
 				-- if it's the same source, reuse the icon
-				if sourceGUID and sourceGUID == self.active[i].sourceGUID then
+				if sourceGUID and IconIsSource(self.active[i].sourceGUID, sourceGUID) then
 					duplicate = nil
 					icon = self.active[i]
 					break
@@ -743,6 +737,13 @@ function OmniBar_Test(self)
 	end
 end
 
+local function ExtractDigits(str)
+	if not str then return 0 end
+	if type(str) == "number" then return str end
+	local num = str:gsub("%D", "")
+	return tonumber(num) or 0
+end
+
 function OmniBar_Position(self)
 	local numActive = #self.active
 	if numActive == 0 then
@@ -751,12 +752,14 @@ function OmniBar_Position(self)
 		return
 	end
 
-	-- Keep cooldowns together
+	-- Keep cooldowns together by class
 	table.sort(self.active, function(a, b)
-		if a.spellID == b.spellID and a.added < b.added then
-			return true
+		local x, y = ExtractDigits(a.sourceGUID), ExtractDigits(b.sourceGUID)
+		if a.class == b.class then
+			if x < y then return true end
+			if x == y then return a.spellID < b.spellID end
 		end
-		return a.class == b.class and a.spellID < b.spellID or order[a.class] < order[b.class]
+		return order[a.class] < order[b.class]
 	end)
 
 	local count, rows = 0, 1
