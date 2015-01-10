@@ -1,3 +1,9 @@
+v3.15
+2015-01-10
+	- fix "As Enemies Appear" incorrectly activating
+	- sort by added time if not showing unused icons
+	- add Fade (Disc)
+
 v3.14
 2015-01-09
 	- detect arena opponent specialization
