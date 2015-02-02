@@ -46,6 +46,7 @@ local cooldowns = {
 	[118000] = { default = false, duration = 60,  class = "WARRIOR" },                       -- Dragon Roar
 	[99]     = { default = false, duration = 30,  class = "DRUID" },                         -- Disorienting Roar
 	[5211]   = { default = false, duration = 50,  class = "DRUID" },                         -- Bash
+	[22812]  = { default = false, duration = 60,  class = "DRUID", specID = { 102, 104, 105 } }, --Barkskin
 	[50334]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },  -- Berserk
 	[61336]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },  -- Survival Instincts
 	[78675]  = { default = true,  duration = 60,  class = "DRUID", specID = { 102 } },       -- Solar Beam
