@@ -60,8 +60,11 @@ local cooldowns = {
 	[47585]  = { default = false, duration = 120, class = "PRIEST", specID = { 258 } },      -- Dispersion
 	[47788]  = { default = false, duration = 180, class = "PRIEST", specID = { 257 } },      -- Guardian Spirit
 	[64044]  = { default = false, duration = 45,  class = "PRIEST", specID = { 258 } },      -- Psychic Horror
+	[5484]   = { default = false, duration = 40,  class = "WARLOCK" },                       -- Howl of Terror
 	[6360]   = { default = false, duration = 25,  class = "WARLOCK" },                       -- Whiplash
+	[6789]   = { default = false, duration = 45,  class = "WARLOCK" },                       -- Mortal Coil
 	[19505]  = { default = false, duration = 15,  class = "WARLOCK" },                       -- Devour Magic (Felhunter)
+	[30283]  = { default = false, duration = 30,  class = "WARLOCK" },                       -- Shadowfury
 	[48020]  = { default = false, duration = 26,  class = "WARLOCK" },                       -- Demonic Portal
 	[119910] = { default = true,  duration = 24,  class = "WARLOCK" },                       -- Spell Lock (Command Demon)
 		[19647]  = { parent = 119910, duration = 24, class = "WARLOCK" },                    -- Spell Lock (Felhunter)
