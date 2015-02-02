@@ -49,6 +49,7 @@ local cooldowns = {
 	[50334]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },  -- Berserk
 	[61336]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },  -- Survival Instincts
 	[78675]  = { default = true,  duration = 60,  class = "DRUID", specID = { 102 } },       -- Solar Beam
+	[102342] = { default = false, duration = 60,  class = "DRUID", specID = { 105 } },       -- Ironbark
 	[102359] = { default = false, duration = 30,  class = "DRUID" },                         -- Mass Entanglement
 	[106839] = { default = true,  duration = 15,  class = "DRUID", specID = { 103, 104 } },  -- Skull Bash
 	[132469] = { default = false, duration = 30,  class = "DRUID" },                         -- Typhoon
@@ -447,7 +448,7 @@ function OmniBar_OnEvent(self, event, ...)
 		-- only add icons when we're in combat
 		if event == "PLAYER_TARGET_CHANGED" and not InCombatLockdown() then return end
 
-		unit = "playertarget"
+		local unit = "playertarget"
 		if IsHostilePlayer(unit) then
 			local guid = UnitGUID(unit)
 			local _, class = UnitClass(unit)
