@@ -1,3 +1,11 @@
+v3.16
+2015-02-01
+	- add Barkskin
+	- add Ironbark
+	- add Howl of Terror
+	- add Mortal Coil
+	- add Shadowfury
+
 v3.15
 2015-01-10
 	- fix "As Enemies Appear" incorrectly activating
