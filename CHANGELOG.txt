@@ -1,3 +1,9 @@
+v3.17
+2015-02-05
+	- add Leap of Faith
+	- add Explosive Trap
+	- add Displacer Beast
+
 v3.16
 2015-02-01
 	- add Barkskin

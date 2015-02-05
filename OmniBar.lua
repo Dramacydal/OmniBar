@@ -50,6 +50,7 @@ local cooldowns = {
 	[50334]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },      -- Berserk
 	[61336]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },      -- Survival Instincts
 	[78675]  = { default = true,  duration = 60,  class = "DRUID", specID = { 102 } },           -- Solar Beam
+	[102280] = { default = false, duration = 30,  class = "DRUID" },                             -- Displacer Beast
 	[102342] = { default = false, duration = 60,  class = "DRUID", specID = { 105 } },           -- Ironbark
 	[102359] = { default = false, duration = 30,  class = "DRUID" },                             -- Mass Entanglement
 	[106839] = { default = true,  duration = 15,  class = "DRUID", specID = { 103, 104 } },      -- Skull Bash
@@ -62,7 +63,7 @@ local cooldowns = {
 	[47788]  = { default = false, duration = 180, class = "PRIEST", specID = { 257 } },          -- Guardian Spirit
 	[64044]  = { default = false, duration = 45,  class = "PRIEST", specID = { 258 } },          -- Psychic Horror
 	[73325]  = { default = false, duration = 90,  class = "PRIEST" },                            -- Leap of Faith
-		[157145] = { parent = 73325, duration = 90, class = "PRIEST" },                          -- Enhanced Leap of Faith
+	    [157145] = { parent = 73325, duration = 90, class = "PRIEST" },                          -- Enhanced Leap of Faith
 	[5484]   = { default = false, duration = 40,  class = "WARLOCK" },                           -- Howl of Terror
 	[6360]   = { default = false, duration = 25,  class = "WARLOCK" },                           -- Whiplash
 	[6789]   = { default = false, duration = 45,  class = "WARLOCK" },                           -- Mortal Coil
@@ -70,8 +71,8 @@ local cooldowns = {
 	[30283]  = { default = false, duration = 30,  class = "WARLOCK" },                           -- Shadowfury
 	[48020]  = { default = false, duration = 26,  class = "WARLOCK" },                           -- Demonic Portal
 	[119910] = { default = true,  duration = 24,  class = "WARLOCK" },                           -- Spell Lock (Command Demon)
-		[19647]  = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Spell Lock (Felhunter)
-		[119911] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Optical Blast (Command Demon)
+	    [19647]  = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Spell Lock (Felhunter)
+	    [119911] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Optical Blast (Command Demon)
 	    [115781] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Optical Blast (Observer)
 	    [132409] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Spell Lock (Grimoire of Sacrifice)
 	    [171138] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Shadow Lock (Doomguard)
@@ -95,6 +96,8 @@ local cooldowns = {
 	[108285] = { default = false, duration = 180, class = "SHAMAN" },                            -- Call of the Elements
 	[1499]   = { default = false, duration = 30,  class = "HUNTER" },                            -- Freezing Trap
 	    [60192] = { parent = 1499, duration = 30, class = "HUNTER" },                            -- Freezing Trap (Trap Launcher)
+	[13813]  = { default = false, duration = 30,  class = "HUNTER" },                            -- Explosive Trap
+	    [82939] = { parent = 13813, duration = 30, class = "HUNTER" },                           -- Explosive Trap (Trap Launcher)
 	[19263]  = { default = false, duration = 180, class = "HUNTER" },                            -- Deterrence
 	[19386]  = { default = false, duration = 45,  class = "HUNTER" },                            -- Wyvern Sting
 	[19574]  = { default = false, duration = 60,  class = "HUNTER", specID = { 253 } },          -- Bestial Wrath
