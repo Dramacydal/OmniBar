@@ -22,7 +22,7 @@ local cooldowns = {
 	[108194] = { default = false, duration = 30,  class = "DEATHKNIGHT" },                       -- Asphyxiate
 	[642]    = { default = false, duration = 300, class = "PALADIN" },                           -- Divine Shield
 	[853]    = { default = false, duration = 60,  class = "PALADIN" },                           -- Hammer of Justice
-	    [105593] = { parent = 853, duration = 30, class = "PALADIN" },                           -- Fist of Justice
+	    [105593] = { parent = 853, duration = 30 },                           -- Fist of Justice
 	[1022]   = { default = false, duration = 300, class = "PALADIN" },                           -- Hand of Protection
 	[1044]   = { default = false, duration = 25,  class = "PALADIN" },                           -- Hand of Freedom
 	[6940]   = { default = false, duration = 120, class = "PALADIN" },                           -- Hand of Sacrifice
@@ -63,7 +63,7 @@ local cooldowns = {
 	[47788]  = { default = false, duration = 180, class = "PRIEST", specID = { 257 } },          -- Guardian Spirit
 	[64044]  = { default = false, duration = 45,  class = "PRIEST", specID = { 258 } },          -- Psychic Horror
 	[73325]  = { default = false, duration = 90,  class = "PRIEST" },                            -- Leap of Faith
-	    [157145] = { parent = 73325, duration = 90, class = "PRIEST" },                          -- Enhanced Leap of Faith
+	    [157145] = { parent = 73325 },                          -- Enhanced Leap of Faith
 	[5484]   = { default = false, duration = 40,  class = "WARLOCK" },                           -- Howl of Terror
 	[6360]   = { default = false, duration = 25,  class = "WARLOCK" },                           -- Whiplash
 	[6789]   = { default = false, duration = 45,  class = "WARLOCK" },                           -- Mortal Coil
@@ -71,13 +71,13 @@ local cooldowns = {
 	[30283]  = { default = false, duration = 30,  class = "WARLOCK" },                           -- Shadowfury
 	[48020]  = { default = false, duration = 26,  class = "WARLOCK" },                           -- Demonic Portal
 	[119910] = { default = true,  duration = 24,  class = "WARLOCK" },                           -- Spell Lock (Command Demon)
-	    [19647]  = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Spell Lock (Felhunter)
-	    [119911] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Optical Blast (Command Demon)
-	    [115781] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Optical Blast (Observer)
-	    [132409] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Spell Lock (Grimoire of Sacrifice)
-	    [171138] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Shadow Lock (Doomguard)
-	    [171139] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Shadow Lock (Grimoire of Sacrifice)
-	    [171140] = { parent = 119910, duration = 24, class = "WARLOCK" },                        -- Shadow Lock (Command Demon)
+	    [19647]  = { parent = 119910 },                        -- Spell Lock (Felhunter)
+	    [119911] = { parent = 119910 },                        -- Optical Blast (Command Demon)
+	    [115781] = { parent = 119910 },                        -- Optical Blast (Observer)
+	    [132409] = { parent = 119910 },                        -- Spell Lock (Grimoire of Sacrifice)
+	    [171138] = { parent = 119910 },                        -- Shadow Lock (Doomguard)
+	    [171139] = { parent = 119910 },                        -- Shadow Lock (Grimoire of Sacrifice)
+	    [171140] = { parent = 119910 },                        -- Shadow Lock (Command Demon)
 	[111859] = { default = false, duration = 120, class = "WARLOCK" },                           -- Grimoire: Imp
 	[111896] = { default = false, duration = 120, class = "WARLOCK" },                           -- Grimoire: Succubus
 	[111897] = { default = true,  duration = 120, class = "WARLOCK" },                           -- Grimoire: Felhunter
@@ -94,10 +94,10 @@ local cooldowns = {
 	[108271] = { default = false, duration = 90,  class = "SHAMAN" },                            -- Astral Shift
 	[108273] = { default = false, duration = 60,  class = "SHAMAN" },                            -- Windwalk Totem
 	[108285] = { default = false, duration = 180, class = "SHAMAN" },                            -- Call of the Elements
-	[1499]   = { default = false, duration = 30,  class = "HUNTER" },                            -- Freezing Trap
-	    [60192] = { parent = 1499, duration = 30, class = "HUNTER" },                            -- Freezing Trap (Trap Launcher)
-	[13813]  = { default = false, duration = 30,  class = "HUNTER" },                            -- Explosive Trap
-	    [82939] = { parent = 13813, duration = 30, class = "HUNTER" },                           -- Explosive Trap (Trap Launcher)
+	[1499]   = { default = false, duration = { default = 12, [253] = 30, [254] = 30 }, class = "HUNTER" }, -- Freezing Trap
+	    [60192] = { parent = 1499 },                            -- Freezing Trap (Trap Launcher)
+	[13813]  = { default = false, duration = { default = 12, [253] = 30, [254] = 30 }, class = "HUNTER" }, -- Explosive Trap
+	    [82939] = { parent = 13813 },                           -- Explosive Trap (Trap Launcher)
 	[19263]  = { default = false, duration = 180, class = "HUNTER" },                            -- Deterrence
 	[19386]  = { default = false, duration = 45,  class = "HUNTER" },                            -- Wyvern Sting
 	[19574]  = { default = false, duration = 60,  class = "HUNTER", specID = { 253 } },          -- Bestial Wrath
@@ -279,7 +279,7 @@ end
 function OmniBar_AddIconsByClass(self, class, sourceGUID, specID)
 	for spellID, spell in pairs(cooldowns) do
 		if OmniBar_IsSpellEnabled(self, spellID) and spell.class == class and SpellBelongsToSpec(spellID, specID) then
-			OmniBar_AddIcon(self, spellID, sourceGUID, true)
+			OmniBar_AddIcon(self, spellID, sourceGUID, true, specID)
 		end
 	end
 end
@@ -632,7 +632,7 @@ function OmniBar_StartCooldown(self, icon, start)
 end
 
 
-function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
+function OmniBar_AddIcon(self, spellID, sourceGUID, init, test, specID)
 	-- Check for parent spellID
 	local originalSpellID = spellID
 	if cooldowns[spellID].parent then spellID = cooldowns[spellID].parent end
@@ -671,6 +671,7 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 		for i = 1, #self.icons do
 			if not self.icons[i]:IsVisible() then
 				icon = self.icons[i]
+				icon.specID = nil
 				break
 			end
 		end
@@ -680,13 +681,39 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test)
 	if not icon then return end
 
 	local now = GetTime()
+	if specID then icon.specID = specID end
 	icon.class = cooldowns[spellID].class
 	icon.sourceGUID = sourceGUID
 	icon.icon:SetTexture(cooldowns[spellID].icon)
 	icon.spellID = spellID
 	icon.added = now
+
 	-- We don't want duration to be too long if we're just testing
-	icon.duration = test and math.random(5,30) or cooldowns[originalSpellID].duration
+	if test then
+		icon.duration = math.random(5,30)
+	else
+		if cooldowns[originalSpellID].duration then
+			if type(cooldowns[originalSpellID].duration) == "table" then
+				if icon.specID and cooldowns[originalSpellID].duration[icon.specID] then
+					icon.duration = cooldowns[originalSpellID].duration[icon.specID]
+				else
+					icon.duration = cooldowns[originalSpellID].duration.default
+				end
+			else
+				icon.duration = cooldowns[originalSpellID].duration
+			end
+		else -- child doesn't have a custom duration, use parent
+			if type(cooldowns[spellID].duration) == "table" then
+				if icon.specID and cooldowns[spellID].duration[icon.specID] then
+					icon.duration = cooldowns[spellID].duration[icon.specID]
+				else
+					icon.duration = cooldowns[spellID].duration.default
+				end
+			else
+				icon.duration = cooldowns[spellID].duration
+			end
+		end
+	end
 
 	-- Masque
 	if Masque then
