@@ -279,7 +279,7 @@ end
 function OmniBar_AddIconsByClass(self, class, sourceGUID, specID)
 	for spellID, spell in pairs(cooldowns) do
 		if OmniBar_IsSpellEnabled(self, spellID) and spell.class == class and SpellBelongsToSpec(spellID, specID) then
-			OmniBar_AddIcon(self, spellID, sourceGUID, true, specID)
+			OmniBar_AddIcon(self, spellID, sourceGUID, nil, true, specID)
 		end
 	end
 end
@@ -345,6 +345,7 @@ function OmniBar_OnEvent(self, event, ...)
 		self.active = {}
 		self.cooldowns = cooldowns
 		self.detected = {}
+		self.specs = {}
 		self.BASE_ICON_SIZE = BASE_ICON_SIZE
 		self.numIcons = 0
 		self:RegisterForDrag("LeftButton")
@@ -396,10 +397,10 @@ function OmniBar_OnEvent(self, event, ...)
 		InterfaceOptions_AddCategory(frame)
 
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, event, _, sourceGUID, _, sourceFlags, _,_,_,_,_, spellID = ...
+		local _, event, _, sourceGUID, sourceName, sourceFlags, _,_,_,_,_, spellID = ...
 		if self.disabled then return end
 		if event == "SPELL_CAST_SUCCESS" and bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) ~= 0 then
-			if cooldowns[spellID] then OmniBar_AddIcon(self, spellID, sourceGUID) end
+			if cooldowns[spellID] then OmniBar_AddIcon(self, spellID, sourceGUID, sourceName) end
 
 			-- Check if we need to reset any cooldowns
 			if resets[spellID] then
@@ -421,6 +422,7 @@ function OmniBar_OnEvent(self, event, ...)
 		local rated = IsRatedBattleground()
 		OmniBar_LoadPosition(self)
 		wipe(self.detected)
+		wipe(self.specs)
 		self.disabled = (zone == "arena" and self.settings.noArena) or
 			(rated and self.settings.noRatedBattleground) or
 			(zone == "pvp" and self.settings.noBattleground and not rated) or
@@ -438,6 +440,8 @@ function OmniBar_OnEvent(self, event, ...)
 			if not self.detected[i] then
 				local specID = GetArenaOpponentSpec(i)
 				if specID and specID > 0 then
+					local name = GetUnitName("arena"..1, true)
+					if name then self.specs[name] = specID end
 					local class = select(7, GetSpecializationInfoByID(specID))
 					OmniBar_AddIconsByClass(self, class, i, specID)
 					self.detected[i] = class
@@ -618,7 +622,7 @@ function OmniBar_RefreshIcons(self)
 	if self.settings.showUnused and not self.settings.adaptive then
 		for spellID,_ in pairs(cooldowns) do
 			if OmniBar_IsSpellEnabled(self, spellID) then
-				OmniBar_AddIcon(self, spellID, nil, true)
+				OmniBar_AddIcon(self, spellID, nil, nil, true)
 			end
 		end
 	end
@@ -632,7 +636,7 @@ function OmniBar_StartCooldown(self, icon, start)
 end
 
 
-function OmniBar_AddIcon(self, spellID, sourceGUID, init, test, specID)
+function OmniBar_AddIcon(self, spellID, sourceGUID, sourceName, init, test, specID)
 	-- Check for parent spellID
 	local originalSpellID = spellID
 	if cooldowns[spellID].parent then spellID = cooldowns[spellID].parent end
@@ -681,7 +685,15 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, init, test, specID)
 	if not icon then return end
 
 	local now = GetTime()
-	if specID then icon.specID = specID end
+
+	if specID then
+		icon.specID = specID
+	else
+		if sourceName and sourceName ~= COMBATLOG_FILTER_STRING_UNKNOWN_UNITS and self.specs[sourceName] then
+			icon.specID = self.specs[sourceName]
+		end
+	end
+
 	icon.class = cooldowns[spellID].class
 	icon.sourceGUID = sourceGUID
 	icon.icon:SetTexture(cooldowns[spellID].icon)
@@ -781,7 +793,7 @@ function OmniBar_Test(self)
 	self.disabled = nil
 	OmniBar_RefreshIcons(self)
 	for k,v in pairs(cooldowns) do
-		OmniBar_AddIcon(self, k, nil, nil, true)
+		OmniBar_AddIcon(self, k, nil, nil, nil, true)
 	end
 end
 
