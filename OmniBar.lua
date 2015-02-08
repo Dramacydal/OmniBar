@@ -435,8 +435,9 @@ function OmniBar_OnEvent(self, event, ...)
 					if self.active[i] and self.active[i].spellID and self.active[i].sourceGUID and self.active[i].sourceGUID == sourceGUID and self.active[i].cooldown:IsVisible() then
 						-- cooldown belongs to this source
 						for j = 1, #resets[spellID] do
-							if resets[spellID][j] and resets[spellID][j] == self.active[i].spellID then
+							if resets[spellID][j] == self.active[i].spellID then
 								self.active[i].cooldown:Hide()
+								return
 							end
 						end
 					end
