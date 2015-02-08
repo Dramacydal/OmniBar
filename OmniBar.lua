@@ -249,6 +249,17 @@ for spellID,_ in pairs(cooldowns) do
 	cooldowns[spellID].name = name
 end
 
+-- create a lookup table to translate spec names into IDs
+local specNames = {}
+for classID = 1, MAX_CLASSES do
+	local _, classToken = GetClassInfoByID(classID)
+	specNames[classToken] = {}
+	for i = 1, GetNumSpecializationsForClassID(classID) do
+		local id, name = GetSpecializationInfoForClassID(classID, i)
+		specNames[classToken][name] = id
+	end
+end
+
 local function IsHostilePlayer(unit)
 	return unit and UnitIsPlayer(unit) and UnitReaction("player", unit) < 4 and not UnitIsPossessed(unit)
 end
@@ -336,6 +347,17 @@ function OmniBar_UpdateBorders(self)
 	end
 end
 
+function OmniBar_UpdateArenaSpecs(self)
+	if self.zone ~= "arena" then return end
+	for i = 1, 5 do
+		local specID = GetArenaOpponentSpec(i)
+		if specID and specID > 0 then
+			local name = GetUnitName("arena"..i, true)
+			if name then self.specs[name] = specID end
+		end
+	end
+end
+
 function OmniBar_OnEvent(self, event, ...)
 	if event == "ADDON_LOADED" then
 		local name = ...
@@ -378,6 +400,7 @@ function OmniBar_OnEvent(self, event, ...)
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
 		self:RegisterEvent("ARENA_OPPONENT_UPDATE")
 		self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+		self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
 
 		-- Add Options Panel category
 		local frame = CreateFrame("Frame", "OmniBarOptions")
@@ -401,7 +424,10 @@ function OmniBar_OnEvent(self, event, ...)
 		local _, event, _, sourceGUID, sourceName, sourceFlags, _,_,_,_,_, spellID = ...
 		if self.disabled then return end
 		if event == "SPELL_CAST_SUCCESS" and bit.band(sourceFlags, COMBATLOG_OBJECT_REACTION_HOSTILE) ~= 0 then
-			if cooldowns[spellID] then OmniBar_AddIcon(self, spellID, sourceGUID, sourceName) end
+			if cooldowns[spellID] then
+				OmniBar_UpdateArenaSpecs(self)
+				OmniBar_AddIcon(self, spellID, sourceGUID, sourceName)
+			end
 
 			-- Check if we need to reset any cooldowns
 			if resets[spellID] then
@@ -433,16 +459,21 @@ function OmniBar_OnEvent(self, event, ...)
 		OmniBar_UpdateIcons(self)
 		if zone == "arena" then OmniBar_OnEvent(self, "ARENA_OPPONENT_UPDATE") end
 
-	elseif event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" or event == "ARENA_OPPONENT_UPDATE" then
-		-- only add icons if show unused is checked
-		if not self.settings.showUnused then return end
+	elseif event == "UPDATE_BATTLEFIELD_SCORE" then
+		for i = 1, GetNumBattlefieldScores() do
+			local name, _,_,_,_,_,_,_, classToken, _,_,_,_,_,_, talentSpec = GetBattlefieldScore(i)
+			if name and specNames[classToken] and specNames[classToken][talentSpec] then
+				self.specs[name] = specNames[classToken][talentSpec]
+			end
+		end
 
+	elseif event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS" or event == "ARENA_OPPONENT_UPDATE" then
 		for i = 1, 5 do
-			if not self.detected[i] then
-				local specID = GetArenaOpponentSpec(i)
-				if specID and specID > 0 then
-					local name = GetUnitName("arena"..1, true)
-					if name then self.specs[name] = specID end
+			local specID = GetArenaOpponentSpec(i)
+			if specID and specID > 0 then
+				-- only add icons if show unused is checked
+				if not self.settings.showUnused then return end
+				if not self.detected[i] then
 					local class = select(7, GetSpecializationInfoByID(specID))
 					OmniBar_AddIconsByClass(self, class, i, specID)
 					self.detected[i] = class
