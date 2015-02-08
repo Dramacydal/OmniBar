@@ -64,7 +64,6 @@ local cooldowns = {
 	[47788]  = { default = false, duration = 180, class = "PRIEST", specID = { 257 } },                    -- Guardian Spirit
 	[64044]  = { default = false, duration = 45,  class = "PRIEST", specID = { 258 } },                    -- Psychic Horror
 	[73325]  = { default = false, duration = 90,  class = "PRIEST" },                                      -- Leap of Faith
-	    [157145] = { parent = 73325 },                                                                     -- Enhanced Leap of Faith
 	[5484]   = { default = false, duration = 40,  class = "WARLOCK" },                                     -- Howl of Terror
 	[6360]   = { default = false, duration = 25,  class = "WARLOCK" },                                     -- Whiplash
 	[6789]   = { default = false, duration = 45,  class = "WARLOCK" },                                     -- Mortal Coil
