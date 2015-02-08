@@ -26,7 +26,7 @@ local cooldowns = {
 	    [105593] = { parent = 853, duration = 30 },                                                        -- Fist of Justice
 	[1022]   = { default = false, duration = 300, class = "PALADIN" },                                     -- Hand of Protection
 	[1044]   = { default = false, duration = 25,  class = "PALADIN" },                                     -- Hand of Freedom
-	[6940]   = { default = false, duration = 120, class = "PALADIN" },                                     -- Hand of Sacrifice
+	[6940]   = { default = false, duration = { default = 90, [65] = 110 }, class = "PALADIN" },            -- Hand of Sacrifice
 	[20066]  = { default = false, duration = 15,  class = "PALADIN" },                                     -- Repentance
 	[31821]  = { default = false, duration = 180, class = "PALADIN", specID = { 65 } },                    -- Devotion Aura
 	[31884]  = { default = false, duration = 120, class = "PALADIN" },                                     -- Avenging Wrath
@@ -117,7 +117,7 @@ local cooldowns = {
 	[113724] = { default = false, duration = 45,  class = "MAGE" },                                        -- Ring of Frost
 	[408]    = { default = false, duration = 20,  class = "ROGUE" },                                       -- Kidney Shot
 	[1766]   = { default = true,  duration = 15,  class = "ROGUE" },                                       -- Kick
-	[1856]   = { default = false, duration = 120, class = "ROGUE" },                                       -- Vanish
+	[1856]   = { default = false, duration = { default = 60, [261] = 120 }, class = "ROGUE" },             -- Vanish
 	[2094]   = { default = false, duration = 120, class = "ROGUE" },                                       -- Blind
 	[2983]   = { default = false, duration = 60,  class = "ROGUE" },                                       -- Sprint
 	[5277]   = { default = false, duration = 180, class = "ROGUE" },                                       -- Evasion
