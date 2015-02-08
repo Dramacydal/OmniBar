@@ -1,8 +1,19 @@
+v4.0
+2015-02-08
+	- detect cooldown durations based on talent spec
+	- detect specialization in battlegrounds
+	- set Dark Simulacrum cooldown to 30 seconds
+	- set Divine Shield cooldown to 150 seconds
+	- add Divine Protection
+	- add Die by the Sword
+	- minor bug fix
+
 v3.17
 2015-02-05
 	- add Leap of Faith
 	- add Explosive Trap
 	- add Displacer Beast
+	- add Spirit Link Totem
 
 v3.16
 2015-02-01
