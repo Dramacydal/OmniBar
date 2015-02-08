@@ -44,6 +44,7 @@ local cooldowns = {
 	[114028] = { default = false, duration = 30,  class = "WARRIOR" },                           -- Mass Shield Reflect
 	[114029] = { default = false, duration = 30,  class = "WARRIOR" },                           -- Safeguard
 	[118000] = { default = false, duration = 60,  class = "WARRIOR" },                           -- Dragon Roar
+	[118038] = { default = false, duration = 120, class = "WARRIOR", specID = { 71, 72 } },      -- Die by the Sword
 	[99]     = { default = false, duration = 30,  class = "DRUID" },                             -- Disorienting Roar
 	[5211]   = { default = false, duration = 50,  class = "DRUID" },                             -- Bash
 	[22812]  = { default = false, duration = 60,  class = "DRUID", specID = { 102, 104, 105 } }, -- Barkskin
