@@ -20,6 +20,7 @@ local cooldowns = {
 	[91802]  = { default = true,  duration = 30,  class = "DEATHKNIGHT", specID = { 252 } },               -- Shambling Rush
 	[96268]  = { default = false, duration = 30,  class = "DEATHKNIGHT" },                                 -- Death's Advance
 	[108194] = { default = false, duration = 30,  class = "DEATHKNIGHT" },                                 -- Asphyxiate
+	[498]    = { default = false, duration = 30,  class = "PALADIN" },                                     -- Divine Protection
 	[642]    = { default = false, duration = 150, class = "PALADIN" },                                     -- Divine Shield
 	[853]    = { default = false, duration = 60,  class = "PALADIN" },                                     -- Hammer of Justice
 	    [105593] = { parent = 853, duration = 30 },                                                        -- Fist of Justice
