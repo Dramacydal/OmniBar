@@ -249,7 +249,7 @@ for spellID,_ in pairs(cooldowns) do
 end
 
 local function IsHostilePlayer(unit)
-	return UnitIsPlayer(unit) and UnitReaction("player", unit) < 4 and not UnitIsPossessed(unit)
+	return unit and UnitIsPlayer(unit) and UnitReaction("player", unit) < 4 and not UnitIsPossessed(unit)
 end
 
 function OmniBar_ShowAnchor(self)
