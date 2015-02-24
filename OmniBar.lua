@@ -130,6 +130,7 @@ local cooldowns = {
 	[76577]  = { default = false, duration = 180, class = "ROGUE" },                                       -- Smoke Bomb
 	[115176] = { default = false, duration = 180, class = "MONK", specID = { 268, 269 } },                 -- Zen Meditation
 	[115203] = { default = false, duration = 180, class = "MONK" },                                        -- Fortifying Brew
+	[115310] = { default = false, duration = 180, class = "MONK" },                                        -- Revival
 	[116705] = { default = true,  duration = 15,  class = "MONK" },                                        -- Spear Hand Strike
 	[116844] = { default = false, duration = 45,  class = "MONK" },                                        -- Ring of Peace
 	[116849] = { default = false, duration = 55,  class = "MONK", specID = { 270 } },                      -- Life Cocoon
