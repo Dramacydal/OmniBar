@@ -39,10 +39,10 @@ local cooldowns = {
 	[6544]   = { default = false, duration = 45,  class = "WARRIOR" },                                     -- Heroic Leap
 	[6552]   = { default = true,  duration = 15,  class = "WARRIOR" },                                     -- Pummel
 	[18499]  = { default = false, duration = 30,  class = "WARRIOR" },                                     -- Berserker Rage
-	[23920]  = { default = false, duration = 25,  class = "WARRIOR" },                                     -- Shield Reflect
+	[23920]  = { default = false, duration = 25,  class = "WARRIOR" },                                     -- Spell Reflection
+		[114028] = { parent = 23920, duration = 30 },                                                      -- Mass Spell Reflection
 	[46968]  = { default = false, duration = 20,  class = "WARRIOR" },                                     -- Shockwave
 	[107570] = { default = false, duration = 30,  class = "WARRIOR" },                                     -- Storm Bolt
-	[114028] = { default = false, duration = 30,  class = "WARRIOR" },                                     -- Mass Shield Reflect
 	[114029] = { default = false, duration = 30,  class = "WARRIOR" },                                     -- Safeguard
 	[118000] = { default = false, duration = 60,  class = "WARRIOR" },                                     -- Dragon Roar
 	[118038] = { default = false, duration = 120, class = "WARRIOR", specID = { 71, 72 } },                -- Die by the Sword
