@@ -266,7 +266,7 @@ local function IsHostilePlayer(unit)
 end
 
 function OmniBar_ShowAnchor(self)
-	if self.settings.locked or #self.active > 0 then
+	if self.disabled or self.settings.locked or #self.active > 0 then
 		self.anchor:Hide()
 	else
 		self.anchor:Show()
@@ -457,6 +457,7 @@ function OmniBar_OnEvent(self, event, ...)
 			(zone == "pvp" and self.settings.noBattleground and not rated) or
 			(zone ~= "arena" and zone ~= "pvp" and self.settings.noWorld)
 		self.zone = zone			
+		OmniBar_ShowAnchor(self)
 		OmniBar_RefreshIcons(self)
 		OmniBar_UpdateIcons(self)
 		if zone == "arena" then OmniBar_OnEvent(self, "ARENA_OPPONENT_UPDATE") end
