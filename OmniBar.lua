@@ -20,6 +20,7 @@ local cooldowns = {
 	[91802]  = { default = true,  duration = 30,  class = "DEATHKNIGHT", specID = { 252 } },               -- Shambling Rush
 	[96268]  = { default = false, duration = 30,  class = "DEATHKNIGHT" },                                 -- Death's Advance
 	[108194] = { default = false, duration = 30,  class = "DEATHKNIGHT" },                                 -- Asphyxiate
+	[108201] = { default = false, duration = 120, class = "DEATHKNIGHT" },                                 -- Desecrated Ground
 	[498]    = { default = false, duration = 30,  class = "PALADIN" },                                     -- Divine Protection
 	[642]    = { default = false, duration = 150, class = "PALADIN" },                                     -- Divine Shield
 	[853]    = { default = false, duration = 60,  class = "PALADIN" },                                     -- Hammer of Justice
@@ -56,6 +57,7 @@ local cooldowns = {
 	[102342] = { default = false, duration = 60,  class = "DRUID", specID = { 105 } },                     -- Ironbark
 	[102359] = { default = false, duration = 30,  class = "DRUID" },                                       -- Mass Entanglement
 	[106839] = { default = true,  duration = 15,  class = "DRUID", specID = { 103, 104 } },                -- Skull Bash
+	[132158] = { default = false, duration = 60,  class = "DRUID", specID = { 105 } },                     -- Nature's Swiftness
 	[132469] = { default = false, duration = 30,  class = "DRUID" },                                       -- Typhoon
 	[586]    = { default = false, duration = 90,  class = "PRIEST", specID = { 256 } },                    -- Fade
 	[8122]   = { default = false, duration = 30,  class = "PRIEST" },                                      -- Psychic Scream
@@ -71,6 +73,7 @@ local cooldowns = {
 	[19505]  = { default = false, duration = 15,  class = "WARLOCK" },                                     -- Devour Magic (Felhunter)
 	[30283]  = { default = false, duration = 30,  class = "WARLOCK" },                                     -- Shadowfury
 	[48020]  = { default = false, duration = 26,  class = "WARLOCK" },                                     -- Demonic Portal
+	[108482] = { default = false, duration = 120, class = "WARLOCK" },                                     -- Unbound Will
 	[119910] = { default = true,  duration = 24,  class = "WARLOCK" },                                     -- Spell Lock (Command Demon)
 	    [19647]  = { parent = 119910 },                                                                    -- Spell Lock (Felhunter)
 	    [119911] = { parent = 119910 },                                                                    -- Optical Blast (Command Demon)
@@ -102,6 +105,7 @@ local cooldowns = {
 	[19263]  = { default = false, duration = 180, class = "HUNTER" },                                      -- Deterrence
 	[19386]  = { default = false, duration = 45,  class = "HUNTER" },                                      -- Wyvern Sting
 	[19574]  = { default = false, duration = 60,  class = "HUNTER", specID = { 253 } },                    -- Bestial Wrath
+	[53480]  = { default = false, duration = 60,  class = "HUNTER" },                                      -- Roar of Sacrifice
 	[131894] = { default = false, duration = 60,  class = "HUNTER" },                                      -- A Murder of Crows
 	[147362] = { default = true,  duration = 24,  class = "HUNTER" },                                      -- Counter Shot
 	[66]     = { default = false, duration = 300, class = "MAGE" },                                        -- Invisibility
