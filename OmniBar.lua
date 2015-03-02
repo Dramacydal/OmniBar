@@ -95,9 +95,9 @@ local cooldowns = {
 	[108271] = { default = false, duration = 90,  class = "SHAMAN" },                                      -- Astral Shift
 	[108273] = { default = false, duration = 60,  class = "SHAMAN" },                                      -- Windwalk Totem
 	[108285] = { default = false, duration = 180, class = "SHAMAN" },                                      -- Call of the Elements
-	[1499]   = { default = false, duration = { default = 12, [253] = 30, [254] = 30 }, class = "HUNTER" }, -- Freezing Trap
+	[1499]   = { default = false, duration = { default = 20, [253] = 30, [254] = 30 }, class = "HUNTER" }, -- Freezing Trap
 	    [60192] = { parent = 1499 },                                                                       -- Freezing Trap (Trap Launcher)
-	[13813]  = { default = false, duration = { default = 12, [253] = 30, [254] = 30 }, class = "HUNTER" }, -- Explosive Trap
+	[13813]  = { default = false, duration = { default = 20, [253] = 30, [254] = 30 }, class = "HUNTER" }, -- Explosive Trap
 	    [82939] = { parent = 13813 },                                                                      -- Explosive Trap (Trap Launcher)
 	[19263]  = { default = false, duration = 180, class = "HUNTER" },                                      -- Deterrence
 	[19386]  = { default = false, duration = 45,  class = "HUNTER" },                                      -- Wyvern Sting
