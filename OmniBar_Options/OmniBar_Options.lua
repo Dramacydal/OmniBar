@@ -54,6 +54,9 @@ function OmniBarOptionsPanel_OnLoad(self)
 	OmniBarOptionsPanelShowWorldText:SetText(L.SHOW_IN_WORLD)
 	OmniBarOptionsPanelShowWorld.tooltipText = L.SHOW_IN_WORLD
 	OmniBarOptionsPanelShowWorld.tooltipRequirement = L.SHOW_IN_WORLD_TOOLTIP
+	OmniBarOptionsPanelShowAshranText:SetText(L.SHOW_IN_ASHRAN)
+	OmniBarOptionsPanelShowAshran.tooltipText = L.SHOW_IN_ASHRAN
+	OmniBarOptionsPanelShowAshran.tooltipRequirement = L.SHOW_IN_ASHRAN_TOOLTIP
 	OmniBarOptionsPanelTrackMultipleText:SetText(L.TRACK_MULTIPLE_PLAYERS)
 	OmniBarOptionsPanelTrackMultiple.tooltipText = L.TRACK_MULTIPLE_PLAYERS
 	OmniBarOptionsPanelTrackMultiple.tooltipRequirement = L.TRACK_MULTIPLE_PLAYERS_TOOLTIP
@@ -159,6 +162,11 @@ function OmniBarOptionsPanelShowWorld_Update(value)
 	OmniBar_OnEvent(OmniBar, "PLAYER_ENTERING_WORLD")
 end
 
+function OmniBarOptionsPanelShowAshran_Update(value)
+	OmniBar.settings.noAshran = value == "0"
+	OmniBar_OnEvent(OmniBar, "PLAYER_ENTERING_WORLD")
+end
+
 function OmniBarOptionsPanelTrackMultiple_Update(value)
 	OmniBar.settings.noMultiple = value == "0"
 	OmniBar_OnEvent(OmniBar, "PLAYER_ENTERING_WORLD")
@@ -223,6 +231,7 @@ OmniBarOptions.refresh = function()
 	OmniBarOptionsPanelShowRatedBattleground:SetChecked(not OmniBar.settings.noRatedBattleground)
 	OmniBarOptionsPanelShowBattleground:SetChecked(not OmniBar.settings.noBattleground)
 	OmniBarOptionsPanelShowWorld:SetChecked(not OmniBar.settings.noWorld)
+	OmniBarOptionsPanelShowAshran:SetChecked(not OmniBar.settings.noAshran)
 	OmniBarOptionsPanelTrackMultiple:SetChecked(not OmniBar.settings.noMultiple)
 	OmniBarOptionsPanelGlow:SetChecked(not OmniBar.settings.noGlow)
 	OmniBarOptionsPanelSizeSlider:SetValue(OmniBar.settings.size)

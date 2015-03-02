@@ -209,6 +209,7 @@ local defaults = {
 	noRatedBattleground  = false,
 	noBattleground       = false,
 	noWorld              = false,
+	noAshran             = false,
 	noMultiple           = false,
 	noGlow               = false,
 }
@@ -222,6 +223,8 @@ local SETTINGS_VERSION = 2
 local MAX_DUPLICATE_ICONS = 5
 
 local BASE_ICON_SIZE = 36
+
+local ASHRAN_MAP_ID = 978
 
 StaticPopupDialogs["OMNIBAR_CONFIRM_RESET"] = {
 	text = CONFIRM_RESET_SETTINGS,
@@ -396,6 +399,7 @@ function OmniBar_OnEvent(self, event, ...)
 
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:RegisterEvent("PLAYER_ENTERING_WORLD")
+		self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterEvent("PLAYER_FOCUS_CHANGED")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -447,20 +451,28 @@ function OmniBar_OnEvent(self, event, ...)
 		end
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		local _, zone = IsInInstance()
-		local rated = IsRatedBattleground()
-		OmniBar_LoadPosition(self)
+		OmniBar_OnEvent(self, "ZONE_CHANGED_NEW_AREA")
 		wipe(self.detected)
 		wipe(self.specs)
+		if self.zone == "arena" then OmniBar_OnEvent(self, "ARENA_OPPONENT_UPDATE") end
+
+	elseif event == "ZONE_CHANGED_NEW_AREA" then
+		local _, zone = IsInInstance()
+		if zone == "none" then
+			SetMapToCurrentZone()
+			zone = GetCurrentMapAreaID()
+		end
+		local rated = IsRatedBattleground()
 		self.disabled = (zone == "arena" and self.settings.noArena) or
 			(rated and self.settings.noRatedBattleground) or
 			(zone == "pvp" and self.settings.noBattleground and not rated) or
-			(zone ~= "arena" and zone ~= "pvp" and self.settings.noWorld)
-		self.zone = zone			
-		OmniBar_ShowAnchor(self)
+			(zone == ASHRAN_MAP_ID and self.settings.noAshran) or 
+			(zone ~= "arena" and zone ~= "pvp" and zone ~= ASHRAN_MAP_ID and self.settings.noWorld)
+		self.zone = zone
+		OmniBar_LoadPosition(self)
 		OmniBar_RefreshIcons(self)
 		OmniBar_UpdateIcons(self)
-		if zone == "arena" then OmniBar_OnEvent(self, "ARENA_OPPONENT_UPDATE") end
+		OmniBar_ShowAnchor(self)
 
 	elseif event == "UPDATE_BATTLEFIELD_SCORE" then
 		for i = 1, GetNumBattlefieldScores() do
@@ -647,6 +659,7 @@ function OmniBar_RefreshIcons(self)
 		self.icons[i].FocusTexture:SetAlpha(0)
 		self.icons[i].flash:SetAlpha(0)
 		self.icons[i].NewItemTexture:SetAlpha(0)
+		self.icons[i].cooldown:SetCooldown(0, 0)
 		self.icons[i].cooldown:Hide()
 		self.icons[i]:Hide()
 	end
