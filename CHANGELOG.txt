@@ -1,3 +1,14 @@
+v4.3
+2015-03-01
+	- add "Show in Ashran" option
+	- set Freezing Trap cooldown to 20s
+	- set Explosive Trap cooldown to 20s
+	- hide anchor in disabled zones
+
+v4.2
+2015-02-26
+	- set Psychic Scream cooldown to 30s
+
 v4.1
 2015-02-24
 	- update for 6.1
