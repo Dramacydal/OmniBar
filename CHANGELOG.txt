@@ -1,3 +1,10 @@
+v4.4
+2015-03-02
+	- add Desecrated Ground
+	- add Nature's Swiftness
+	- add Unbound Will
+	- add Roar of Sacrifice
+
 v4.3
 2015-03-01
 	- add "Show in Ashran" option
