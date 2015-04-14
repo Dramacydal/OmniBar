@@ -1,3 +1,15 @@
+v5.0
+2015-04-14
+	- support spell charges
+	- fix icons disappearing when interface toggled
+	- truncate long spell names in options
+	- add Dark Soul: Instability
+	- add Dark Soul: Misery
+	- add Dark Soul: Knowledge
+	- add Survival Instincts
+	- add Breath of Sindragosa
+	- add Avatar
+
 v4.5
 2015-04-14
 	- add Incarnation: Tree of Life
