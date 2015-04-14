@@ -1,3 +1,10 @@
+v4.5
+2015-04-14
+	- add Incarnation: Tree of Life
+	- add Incarnation: King of the Jungle
+	- add Incarnation: Chosen of Elune
+	- add Killing Spree
+
 v4.4
 2015-03-02
 	- add Desecrated Ground

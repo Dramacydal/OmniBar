@@ -50,12 +50,15 @@ local cooldowns = {
 	[99]     = { default = false, duration = 30,  class = "DRUID" },                                       -- Disorienting Roar
 	[5211]   = { default = false, duration = 50,  class = "DRUID" },                                       -- Bash
 	[22812]  = { default = false, duration = 60,  class = "DRUID", specID = { 102, 104, 105 } },           -- Barkskin
+	[33891]  = { default = false, duration = 180, class = "DRUID", specID = { 105 } },                     -- Incarnation: Tree of Life
 	[50334]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },                -- Berserk
 	[61336]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },                -- Survival Instincts
 	[78675]  = { default = true,  duration = 60,  class = "DRUID", specID = { 102 } },                     -- Solar Beam
 	[102280] = { default = false, duration = 30,  class = "DRUID" },                                       -- Displacer Beast
 	[102342] = { default = false, duration = 60,  class = "DRUID", specID = { 105 } },                     -- Ironbark
 	[102359] = { default = false, duration = 30,  class = "DRUID" },                                       -- Mass Entanglement
+	[102543] = { default = false, duration = 180, class = "DRUID", specID = { 103 } },                     -- Incarnation: King of the Jungle
+	[102560] = { default = false, duration = 180, class = "DRUID", specID = { 102 } },                     -- Incarnation: Chosen of Elune
 	[106839] = { default = true,  duration = 15,  class = "DRUID", specID = { 103, 104 } },                -- Skull Bash
 	[132158] = { default = false, duration = 60,  class = "DRUID", specID = { 105 } },                     -- Nature's Swiftness
 	[132469] = { default = false, duration = 30,  class = "DRUID" },                                       -- Typhoon
@@ -129,6 +132,7 @@ local cooldowns = {
 	[14185]  = { default = false, duration = 300, class = "ROGUE" },                                       -- Preparation
 	[31224]  = { default = false, duration = 60,  class = "ROGUE" },                                       -- Cloak of Shadows
 	[36554]  = { default = false, duration = 20,  class = "ROGUE" },                                       -- Shadow Step
+	[51690]  = { default = false, duration = 120, class = "ROGUE", specID = { 260} },                      -- Killing Spree
 	[51713]  = { default = false, duration = 60,  class = "ROGUE", specID = { 261 } },                     -- Shadow Dance
 	[74001]  = { default = false, duration = 120, class = "ROGUE" },                                       -- Combat Readiness
 	[76577]  = { default = false, duration = 180, class = "ROGUE" },                                       -- Smoke Bomb
