@@ -1,3 +1,7 @@
+v5.1
+2015-04-14
+	- fix Dark Soul spec detection
+
 v5.0
 2015-04-14
 	- support spell charges
