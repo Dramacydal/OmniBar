@@ -21,13 +21,14 @@ local cooldowns = {
 	[96268]  = { default = false, duration = 30,  class = "DEATHKNIGHT" },                                 -- Death's Advance
 	[108194] = { default = false, duration = 30,  class = "DEATHKNIGHT" },                                 -- Asphyxiate
 	[108201] = { default = false, duration = 120, class = "DEATHKNIGHT" },                                 -- Desecrated Ground
+	[152279] = { default = false, duration = 120, class = "DEATHKNIGHT" },                                 -- Breath of Sindragosa
 	[498]    = { default = false, duration = 30,  class = "PALADIN" },                                     -- Divine Protection
 	[642]    = { default = false, duration = 150, class = "PALADIN" },                                     -- Divine Shield
 	[853]    = { default = false, duration = 60,  class = "PALADIN" },                                     -- Hammer of Justice
 	    [105593] = { parent = 853, duration = 30 },                                                        -- Fist of Justice
-	[1022]   = { default = false, duration = 300, class = "PALADIN" },                                     -- Hand of Protection
-	[1044]   = { default = false, duration = 25,  class = "PALADIN" },                                     -- Hand of Freedom
-	[6940]   = { default = false, duration = { default = 90, [65] = 110 }, class = "PALADIN" },            -- Hand of Sacrifice
+	[1022]   = { default = false, duration = 300, class = "PALADIN", charges = 2 },                        -- Hand of Protection
+	[1044]   = { default = false, duration = 25,  class = "PALADIN", charges = 2 },                        -- Hand of Freedom
+	[6940]   = { default = false, duration = { default = 90, [65] = 110 }, class = "PALADIN", charges = 2 }, -- Hand of Sacrifice
 	[20066]  = { default = false, duration = 15,  class = "PALADIN" },                                     -- Repentance
 	[31821]  = { default = false, duration = 180, class = "PALADIN", specID = { 65 } },                    -- Devotion Aura
 	[31884]  = { default = false, duration = 120, class = "PALADIN" },                                     -- Avenging Wrath
@@ -44,6 +45,7 @@ local cooldowns = {
 		[114028] = { parent = 23920, duration = 30 },                                                      -- Mass Spell Reflection
 	[46968]  = { default = false, duration = 20,  class = "WARRIOR" },                                     -- Shockwave
 	[107570] = { default = false, duration = 30,  class = "WARRIOR" },                                     -- Storm Bolt
+	[107574] = { default = false, duration = 90,  class = "WARRIOR" },                                     -- Avatar
 	[114029] = { default = false, duration = 30,  class = "WARRIOR" },                                     -- Safeguard
 	[118000] = { default = false, duration = 60,  class = "WARRIOR" },                                     -- Dragon Roar
 	[118038] = { default = false, duration = 120, class = "WARRIOR", specID = { 71, 72 } },                -- Die by the Sword
@@ -52,7 +54,7 @@ local cooldowns = {
 	[22812]  = { default = false, duration = 60,  class = "DRUID", specID = { 102, 104, 105 } },           -- Barkskin
 	[33891]  = { default = false, duration = 180, class = "DRUID", specID = { 105 } },                     -- Incarnation: Tree of Life
 	[50334]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },                -- Berserk
-	[61336]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 } },                -- Survival Instincts
+	[61336]  = { default = false, duration = 180, class = "DRUID", specID = { 103, 104 }, charges = 2 },   -- Survival Instincts
 	[78675]  = { default = true,  duration = 60,  class = "DRUID", specID = { 102 } },                     -- Solar Beam
 	[102280] = { default = false, duration = 30,  class = "DRUID" },                                       -- Displacer Beast
 	[102342] = { default = false, duration = 60,  class = "DRUID", specID = { 105 } },                     -- Ironbark
@@ -88,9 +90,9 @@ local cooldowns = {
 	[111859] = { default = false, duration = 120, class = "WARLOCK" },                                     -- Grimoire: Imp
 	[111896] = { default = false, duration = 120, class = "WARLOCK" },                                     -- Grimoire: Succubus
 	[111897] = { default = true,  duration = 120, class = "WARLOCK" },                                     -- Grimoire: Felhunter
-	[113858] = { default = false, duration = 120, class = "WARLOCK" },                                     -- Dark Soul: Instability
-	[113860] = { default = false, duration = 120, class = "WARLOCK" },                                     -- Dark Soul: Misery
-	[113861] = { default = false, duration = 120, class = "WARLOCK" },                                     -- Dark Soul: Knowledge
+	[113858] = { default = false, duration = 120, class = "WARLOCK", charges = 2 },                        -- Dark Soul: Instability
+	[113860] = { default = false, duration = 120, class = "WARLOCK", charges = 2 },                        -- Dark Soul: Misery
+	[113861] = { default = false, duration = 120, class = "WARLOCK", charges = 2 },                        -- Dark Soul: Knowledge
 	[115284] = { default = false, duration = 15,  class = "WARLOCK" },                                     -- Clone Magic (Observer)
 	[115770] = { default = false, duration = 25,  class = "WARLOCK" },                                     -- Fellash
 	[8143]   = { default = false, duration = 60,  class = "SHAMAN" },                                      -- Tremor Totem
@@ -108,7 +110,7 @@ local cooldowns = {
 	    [60192] = { parent = 1499 },                                                                       -- Freezing Trap (Trap Launcher)
 	[13813]  = { default = false, duration = { default = 20, [253] = 30, [254] = 30 }, class = "HUNTER" }, -- Explosive Trap
 	    [82939] = { parent = 13813 },                                                                      -- Explosive Trap (Trap Launcher)
-	[19263]  = { default = false, duration = 180, class = "HUNTER" },                                      -- Deterrence
+	[19263]  = { default = false, duration = 180, class = "HUNTER", charges = 2 },                         -- Deterrence
 	[19386]  = { default = false, duration = 45,  class = "HUNTER" },                                      -- Wyvern Sting
 	[19574]  = { default = false, duration = 60,  class = "HUNTER", specID = { 253 } },                    -- Bestial Wrath
 	[53480]  = { default = false, duration = 60,  class = "HUNTER" },                                      -- Roar of Sacrifice
@@ -638,6 +640,18 @@ end
 function OmniBar_CooldownFinish(self, force)
 	local icon = self:GetParent()
 	if icon.cooldown:GetCooldownTimes() > 0 and not force then return end -- not complete
+	local charges = icon.charges
+	if charges then
+		charges = charges - 1
+		if charges > 0 then
+			-- remove a charge
+			icon.charges = charges
+			icon.Count:SetText(charges)
+			OmniBar_StartCooldown(icon:GetParent():GetParent(), icon, GetTime())
+			return
+		end
+	end
+
 	local bar = icon:GetParent():GetParent()
 
 	local flash = icon.flashAnim
@@ -692,6 +706,7 @@ end
 
 function OmniBar_StartCooldown(self, icon, start)
 	icon.cooldown:SetCooldown(start, icon.duration)
+	icon.cooldown.finish = start + icon.duration
 	icon.cooldown:SetSwipeColor(0, 0, 0, self.settings.swipeAlpha or 0.65)
 	icon:SetAlpha(1)
 end
@@ -761,32 +776,51 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, sourceName, init, test, spec
 	icon.spellID = spellID
 	icon.added = now
 
-	-- We don't want duration to be too long if we're just testing
-	if test then
-		icon.duration = math.random(5,30)
+	if icon.charges and cooldowns[originalSpellID].charges and icon:IsVisible() then
+		local start, duration = icon.cooldown:GetCooldownTimes()
+		if icon.cooldown.finish and icon.cooldown.finish - GetTime() > 1 then
+			-- add a charge
+			local charges = icon.charges + 1
+			icon.charges = charges
+			icon.Count:SetText(charges)
+			if not self.settings.noGlow then
+				icon.flashAnim:Play()
+				icon.newitemglowAnim:Play()
+			end
+			return icon
+		end
+	elseif cooldowns[originalSpellID].charges then
+		icon.charges = 1
+		icon.Count:SetText("1")
 	else
-		if cooldowns[originalSpellID].duration then
-			if type(cooldowns[originalSpellID].duration) == "table" then
-				if icon.specID and cooldowns[originalSpellID].duration[icon.specID] then
-					icon.duration = cooldowns[originalSpellID].duration[icon.specID]
-				else
-					icon.duration = cooldowns[originalSpellID].duration.default
-				end
+		icon.charges = nil
+		icon.Count:SetText(nil)
+	end
+	
+	if cooldowns[originalSpellID].duration then
+		if type(cooldowns[originalSpellID].duration) == "table" then
+			if icon.specID and cooldowns[originalSpellID].duration[icon.specID] then
+				icon.duration = cooldowns[originalSpellID].duration[icon.specID]
 			else
-				icon.duration = cooldowns[originalSpellID].duration
+				icon.duration = cooldowns[originalSpellID].duration.default
 			end
-		else -- child doesn't have a custom duration, use parent
-			if type(cooldowns[spellID].duration) == "table" then
-				if icon.specID and cooldowns[spellID].duration[icon.specID] then
-					icon.duration = cooldowns[spellID].duration[icon.specID]
-				else
-					icon.duration = cooldowns[spellID].duration.default
-				end
+		else
+			icon.duration = cooldowns[originalSpellID].duration
+		end
+	else -- child doesn't have a custom duration, use parent
+		if type(cooldowns[spellID].duration) == "table" then
+			if icon.specID and cooldowns[spellID].duration[icon.specID] then
+				icon.duration = cooldowns[spellID].duration[icon.specID]
 			else
-				icon.duration = cooldowns[spellID].duration
+				icon.duration = cooldowns[spellID].duration.default
 			end
+		else
+			icon.duration = cooldowns[spellID].duration
 		end
 	end
+
+	-- We don't want duration to be too long if we're just testing
+	if test then icon.duration = math.random(5,30) end
 
 	-- Masque
 	if Masque then
