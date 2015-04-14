@@ -253,7 +253,12 @@ local function CreateSub(name)
 		if not cooldown.parent then -- make sure it isn't a child
 			if cooldown.class == name then
 				local spell = CreateFrame("CheckButton", "OmniBarOptionsPanel"..subIndex.."Item"..index, OptionsPanelFrame, "OptionsCheckButtonTemplate")
-				_G["OmniBarOptionsPanel"..subIndex.."Item"..index.."Text"]:SetText(GetSpellInfo(spellID))
+				local text = GetSpellInfo(spellID) or ""
+				-- Truncate long spell names
+				if string.len(text) > 25 then
+					text = string.sub(text, 0, 22) .. "..."
+				end
+				_G["OmniBarOptionsPanel"..subIndex.."Item"..index.."Text"]:SetText(text)
 
 				-- Show the spell tooltip
 				spell.spellID = spellID
