@@ -453,6 +453,7 @@ function OmniBar_OnEvent(self, event, ...)
 						for j = 1, #resets[spellID] do
 							if resets[spellID][j] == self.active[i].spellID then
 								self.active[i].cooldown:Hide()
+								OmniBar_CooldownFinish(self, true)
 								return
 							end
 						end
@@ -634,8 +635,9 @@ function OmniBar_Center(self)
 	self.anchor:SetClampRectInsets(clamp, -clamp, 0, 0)
 end
 
-function OmniBar_CooldownFinish(self)
+function OmniBar_CooldownFinish(self, force)
 	local icon = self:GetParent()
+	if icon.cooldown:GetCooldownTimes() > 0 and not force then return end -- not complete
 	local bar = icon:GetParent():GetParent()
 
 	local flash = icon.flashAnim
