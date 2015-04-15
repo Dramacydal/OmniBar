@@ -2,14 +2,6 @@ v5.4
 2015-04-14
 	- minor bug fix
 
-v5.3
-2015-04-14
-	- minor bug fix
-
-v5.2
-2015-04-14
-	- minor bug fix
-
 v5.1
 2015-04-14
 	- fix Dark Soul spec detection
