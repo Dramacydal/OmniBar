@@ -455,7 +455,7 @@ function OmniBar_OnEvent(self, event, ...)
 						for j = 1, #resets[spellID] do
 							if resets[spellID][j] == self.active[i].spellID then
 								self.active[i].cooldown:Hide()
-								OmniBar_CooldownFinish(self, true)
+								OmniBar_CooldownFinish(self.cooldown, true)
 								return
 							end
 						end
