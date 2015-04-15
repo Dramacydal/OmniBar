@@ -639,7 +639,7 @@ end
 
 function OmniBar_CooldownFinish(self, force)
 	local icon = self:GetParent()
-	if icon.cooldown:GetCooldownTimes() > 0 and not force then return end -- not complete
+	if icon.cooldown and icon.cooldown:GetCooldownTimes() > 0 and not force then return end -- not complete
 	local charges = icon.charges
 	if charges then
 		charges = charges - 1
