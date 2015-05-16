@@ -62,9 +62,15 @@ local cooldowns = {
 	[102543] = { default = false, duration = 180, class = "DRUID", specID = { 103 } },                     -- Incarnation: King of the Jungle
 	[102560] = { default = false, duration = 180, class = "DRUID", specID = { 102 } },                     -- Incarnation: Chosen of Elune
 	[106839] = { default = true,  duration = 15,  class = "DRUID", specID = { 103, 104 } },                -- Skull Bash
+	[108291] = { default = false, duration = 360, class = "DRUID" },                                       -- Heart of the Wild (Balance)
+		[108292] = { parent = 108291 },                                                                    -- Heart of the Wild (Feral)
+		[108293] = { parent = 108291 },                                                                    -- Heart of the Wild (Guardian)
+		[108294] = { parent = 108291 },                                                                    -- Heart of the Wild (Resto)
+	[112071] = { default = false, duration = 180, class = "DRUID", specID = { 102 } },                     -- Celestial Alignment
+	[124974] = { default = false, duration = 90,  class = "DRUID" },                                       -- Nature's Vigil
 	[132158] = { default = false, duration = 60,  class = "DRUID", specID = { 105 } },                     -- Nature's Swiftness
 	[132469] = { default = false, duration = 30,  class = "DRUID" },                                       -- Typhoon
-	[586]    = { default = false, duration = 90,  class = "PRIEST", specID = { 256 } },                    -- Fade
+	[159630] = { default = false, duration = 90,  class = "PRIEST", specID = { 256, 257 } },               -- Shadow Magic
 	[8122]   = { default = false, duration = 30,  class = "PRIEST" },                                      -- Psychic Scream
 	[15487]  = { default = true,  duration = 45,  class = "PRIEST", specID = { 256, 258 } },               -- Silence
 	[33206]  = { default = false, duration = 120, class = "PRIEST", specID = { 256 } },                    -- Pain Suppression
@@ -125,8 +131,10 @@ local cooldowns = {
 	[31661]  = { default = false, duration = 20,  class = "MAGE", specID = { 63 } },                       -- Dragon's Breath
 	[44572]  = { default = false, duration = 30,  class = "MAGE", specID = { 64 } },                       -- Deep Freeze
 	[45438]  = { default = false, duration = 300, class = "MAGE" },                                        -- Ice Block
+	[84714]  = { default = false, duration = 60,  class = "MAGE", specID = { 64 } },                       -- Frozen Orb
 	[102051] = { default = false, duration = 20,  class = "MAGE" },                                        -- Frostjaw
 	[113724] = { default = false, duration = 45,  class = "MAGE" },                                        -- Ring of Frost
+	[157997] = { default = false, duration = 25,  class = "MAGE", specID = { 64 } , charges = 2 },         -- Ice Nova
 	[408]    = { default = false, duration = 20,  class = "ROGUE" },                                       -- Kidney Shot
 	[1766]   = { default = true,  duration = 15,  class = "ROGUE" },                                       -- Kick
 	[1856]   = { default = false, duration = { default = 60, [261] = 120 }, class = "ROGUE" },             -- Vanish
