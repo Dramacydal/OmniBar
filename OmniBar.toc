@@ -6,5 +6,4 @@
 ## DefaultState: Enabled
 ## SavedVariables: OmniBarDB
 
-localization.lua
 OmniBar.xml
