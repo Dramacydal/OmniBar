@@ -96,9 +96,10 @@ local cooldowns = {
 	[111859] = { default = false, duration = 120, class = "WARLOCK" },                                       -- Grimoire: Imp
 	[111896] = { default = false, duration = 120, class = "WARLOCK" },                                       -- Grimoire: Succubus
 	[111897] = { default = true,  duration = 120, class = "WARLOCK" },                                       -- Grimoire: Felhunter
-	[113858] = { default = false, duration = 120, class = "WARLOCK", specID = { 267 }, charges = 2 },        -- Dark Soul: Instability
-	[113860] = { default = false, duration = 120, class = "WARLOCK", specID = { 265 }, charges = 2 },        -- Dark Soul: Misery
-	[113861] = { default = false, duration = 120, class = "WARLOCK", specID = { 266 }, charges = 2 },        -- Dark Soul: Knowledge
+	[77801]  = { default = false, duration = 120, class = "WARLOCK", charges = 2 },                          -- Dark Soul
+		[113858] = { parent = 77801 },                                                                       -- Dark Soul: Instability
+		[113860] = { parent = 77801 },                                                                       -- Dark Soul: Misery
+		[113861] = { parent = 77801 },                                                                       -- Dark Soul: Knowledge
 	[115284] = { default = false, duration = 15,  class = "WARLOCK" },                                       -- Clone Magic (Observer)
 	[115770] = { default = false, duration = 25,  class = "WARLOCK" },                                       -- Fellash
 	[8143]   = { default = false, duration = 60,  class = "SHAMAN" },                                        -- Tremor Totem
