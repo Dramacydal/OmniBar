@@ -1,3 +1,8 @@
+v5.6
+2015-05-18
+	- add Pillar of Frost
+	- combine Dark Soul spells
+
 v5.5
 2015-05-15
 	- add Frozen Orb
