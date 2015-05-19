@@ -15,6 +15,7 @@ local cooldowns = {
 	[49039]  = { default = false, duration = 120, class = "DEATHKNIGHT" },                                   -- Lichborne
 	[49576]  = { default = false, duration = 25,  class = "DEATHKNIGHT" },                                   -- Death Grip
 	[51052]  = { default = false, duration = 120, class = "DEATHKNIGHT" },                                   -- Anti-Magic Zone
+	[51271]  = { default = false, duration = 60,  class = "DEATHKNIGHT", specID = { 251 } },                 -- Pillar of Frost
 	[55233]  = { default = false, duration = 60,  class = "DEATHKNIGHT", specID = { 250 } },                 -- Vampiric Blood
 	[77606]  = { default = false, duration = 30,  class = "DEATHKNIGHT" },                                   -- Dark Simulacrum
 	[91802]  = { default = true,  duration = 30,  class = "DEATHKNIGHT", specID = { 252 } },                 -- Shambling Rush
