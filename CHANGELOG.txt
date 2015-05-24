@@ -1,119 +1,54 @@
-v5.6
-2015-05-18
-	- add Pillar of Frost
-	- combine Dark Soul spells
+**v5.7**
+* Add Execution Sentence
 
-v5.5
-2015-05-15
-	- add Frozen Orb
-	- add Ice Nova
-	- add Heart of the Wild
-	- add Celestial Alignment
-	- add Nature's Vigil
-	- add Shadow Magic
-	- add Frozen Orb
-	- fix Spell Lock resets
+**v5.6**
+* Add Pillar of Frost
+* Combine Dark Soul spells
 
-v5.4
-2015-04-14
-	- minor bug fix
+**v5.5**
+* Add Frozen Orb
+* Add Ice Nova
+* Add Heart of the Wild
+* Add Celestial Alignment
+* Add Nature's Vigil
+* Add Shadow Magic
+* Add Frozen Orb
+* Fix Spell Lock resets
 
-v5.1
-2015-04-14
-	- fix Dark Soul spec detection
+**v5.4**
+* Minor bug fix
 
-v5.0
-2015-04-14
-	- support spell charges
-	- fix icons disappearing when interface toggled
-	- truncate long spell names in options
-	- add Dark Soul: Instability
-	- add Dark Soul: Misery
-	- add Dark Soul: Knowledge
-	- add Survival Instincts
-	- add Breath of Sindragosa
-	- add Avatar
+**v5.1**
+* Fix Dark Soul spec detection
 
-v4.5
-2015-04-14
-	- add Incarnation: Tree of Life
-	- add Incarnation: King of the Jungle
-	- add Incarnation: Chosen of Elune
-	- add Killing Spree
+**v5.0**
+* Support spell charges
+* Fix icons disappearing when interface toggled
+* Truncate long spell names in options
+* Add Dark Soul: Instability
+* Add Dark Soul: Misery
+* Add Dark Soul: Knowledge
+* Add Survival Instincts
+* Add Breath of Sindragosa
+* Add Avatar
 
-v4.4
-2015-03-02
-	- add Desecrated Ground
-	- add Nature's Swiftness
-	- add Unbound Will
-	- add Roar of Sacrifice
+**v4.5**
+* Add Incarnation: Tree of Life
+* Add Incarnation: King of the Jungle
+* Add Incarnation: Chosen of Elune
+* Add Killing Spree
 
-v4.3
-2015-03-01
-	- add "Show in Ashran" option
-	- set Freezing Trap cooldown to 20s
-	- set Explosive Trap cooldown to 20s
-	- hide anchor in disabled zones
+**v4.4**
+* Add Desecrated Ground
+* Add Nature's Swiftness
+* Add Unbound Will
+* Add Roar of Sacrifice
 
-v4.2
-2015-02-26
-	- set Psychic Scream cooldown to 30s
+**v4.3**
+* Add "Show in Ashran" option
+* Set Freezing Trap cooldown to 20s
+* Set Explosive Trap cooldown to 20s
+* Hide anchor in disabled zones
 
-v4.1
-2015-02-24
-	- update for 6.1
-	- add Revival
-	- fix Shield Reflection
-
-v4.0
-2015-02-08
-	- detect cooldown durations based on talent spec
-	- detect specialization in battlegrounds
-	- set Dark Simulacrum cooldown to 30 seconds
-	- set Divine Shield cooldown to 150 seconds
-	- add Divine Protection
-	- add Die by the Sword
-	- minor bug fix
-
-v3.17
-2015-02-05
-	- add Leap of Faith
-	- add Explosive Trap
-	- add Displacer Beast
-	- add Spirit Link Totem
-
-v3.16
-2015-02-01
-	- add Barkskin
-	- add Ironbark
-	- add Howl of Terror
-	- add Mortal Coil
-	- add Shadowfury
-
-v3.15
-2015-01-10
-	- fix "As Enemies Appear" incorrectly activating
-	- sort by added time if not showing unused icons
-	- add Fade (Disc)
-
-v3.14
-2015-01-09
-	- detect arena opponent specialization
-	- fix Psychic Scream cooldown
-	- fix detection of hostile units
-	- fix arena target detection
-	- group icons by player
-
-v3.13
-2015-01-07
-	- minor bug fix
-
-v3.12
-2015-01-06
-	- various fixes and improvements
-	- add Highlight Target option
-	- add Highlight Focus option
-	- improve icon sorting function
-	- fix Pain Suppression cooldown
-	- add Show In Rated Battlegrounds option
-	- fix Show In World option
+**v4.2**
+* Set Psychic Scream cooldown to 30s

@@ -1,6 +1,8 @@
+package-as: OmniBar
+
 move-folders:
 	OmniBar/OmniBar_Options: OmniBar_Options
 
 manual-changelog:
 	filename: CHANGELOG.txt
-	markup-type: plain
+	markup-type: creole
