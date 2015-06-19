@@ -35,6 +35,7 @@ local cooldowns = {
 	[31884]  = { default = false, duration = 120, class = "PALADIN" },                                       -- Avenging Wrath
 	[96231]  = { default = true,  duration = 15,  class = "PALADIN" },                                       -- Rebuke
 	[114039] = { default = false, duration = 30,  class = "PALADIN" },                                       -- Hand of Purity
+	[114157] = { default = false, duration = 60,  class = "PALADIN" },                                       -- Execution Sentence
 	[871]    = { default = false, duration = 180, class = "WARRIOR", specID = { 73 } },                      -- Shield Wall
 	[1719]   = { default = false, duration = 180, class = "WARRIOR", specID = { 71, 72 } },                  -- Recklessness
 	[3411]   = { default = false, duration = 30,  class = "WARRIOR" },                                       -- Intervene
