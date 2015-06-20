@@ -87,6 +87,7 @@ local cooldowns = {
 	[19505]  = { default = false, duration = 15,  class = "WARLOCK" },                                       -- Devour Magic (Felhunter)
 	[30283]  = { default = false, duration = 30,  class = "WARLOCK" },                                       -- Shadowfury
 	[48020]  = { default = false, duration = 26,  class = "WARLOCK" },                                       -- Demonic Portal
+	[89766]  = { default = false, duration = 30,  class = "WARLOCK" },                                       -- Axe Toss
 	[108482] = { default = false, duration = 120, class = "WARLOCK" },                                       -- Unbound Will
 	[119910] = { default = true,  duration = 24,  class = "WARLOCK" },                                       -- Spell Lock (Command Demon)
 	    [19647]  = { parent = 119910 },                                                                      -- Spell Lock (Felhunter)
@@ -197,7 +198,7 @@ local resets = {
 
 	--[[ Call of the Elements
 	     - Tremor Totem
-	     - Grounding Tote
+	     - Grounding Totem
 	     - Capacitor Totem
 	     - Windwalk Totem
 	  ]]
