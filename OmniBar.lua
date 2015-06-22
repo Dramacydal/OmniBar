@@ -228,6 +228,7 @@ local defaults = {
 	noAshran             = false,
 	noMultiple           = false,
 	noGlow               = false,
+	noTooltips           = false,
 }
 
 local OmniBar

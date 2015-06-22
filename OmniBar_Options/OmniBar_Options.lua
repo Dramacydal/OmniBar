@@ -63,6 +63,9 @@ function OmniBarOptionsPanel_OnLoad(self)
 	OmniBarOptionsPanelGlowText:SetText(L.GLOW_ICONS)
 	OmniBarOptionsPanelGlow.tooltipText = L.GLOW_ICONS
 	OmniBarOptionsPanelGlow.tooltipRequirement = L.GLOW_ICONS_TOOLTIP
+	OmniBarOptionsPanelTooltipsText:SetText(L.TOOLTIPS)
+	OmniBarOptionsPanelTooltips.tooltipText = L.TOOLTIPS
+	OmniBarOptionsPanelTooltips.tooltipRequirement = L.TOOLTIPS_TOOLTIP
 	OmniBarOptionsPanelSizeTitle:SetText(L.SIZE)
 	OmniBarOptionsPanelSizeDescription:SetText(L.SIZE_DESCRIPTION)
 	OmniBarOptionsPanelUnusedAlphaTitle:SetText(L.UNUSED_ICON_TRANSPARENCY)
@@ -176,6 +179,10 @@ function OmniBarOptionsPanelGlow_Update(value)
 	OmniBar.settings.noGlow = value == "0"
 end
 
+function OmniBarOptionsPanelTooltips_Update(value)
+	OmniBar.settings.noTooltips = value == "0"
+end
+
 local function OmniBarOptionsPanelSizeSlider_OnValueChanged(self, value)
 	_G[self:GetName() .. "High"]:SetText(value)
 	OmniBar.settings.size = value
@@ -234,6 +241,7 @@ OmniBarOptions.refresh = function()
 	OmniBarOptionsPanelShowAshran:SetChecked(not OmniBar.settings.noAshran)
 	OmniBarOptionsPanelTrackMultiple:SetChecked(not OmniBar.settings.noMultiple)
 	OmniBarOptionsPanelGlow:SetChecked(not OmniBar.settings.noGlow)
+	OmniBarOptionsPanelTooltips:SetChecked(not OmniBar.settings.noTooltips)
 	OmniBarOptionsPanelSizeSlider:SetValue(OmniBar.settings.size)
 	OmniBarOptionsPanelPaddingSlider:SetValue(OmniBar.settings.padding or 0)
 	OmniBarOptionsPanelColumnsSlider:SetValue(OmniBar.settings.columns and OmniBar.settings.columns > 0 and OmniBar.settings.columns or 100)

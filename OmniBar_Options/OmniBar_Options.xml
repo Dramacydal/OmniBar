@@ -382,6 +382,16 @@
 					</OnLoad>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentTooltips" inherits="OptionsCheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentGlow" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.setFunc = OmniBarOptionsPanelTooltips_Update
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
 			<Frame name="$parentUnusedAlpha" inherits="OmniBarOptionsPanelSlider">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="OmniBarOptionsPanelSize">
