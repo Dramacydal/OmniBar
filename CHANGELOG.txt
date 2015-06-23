@@ -1,3 +1,9 @@
+**v5.8**
+* Update for 6.2
+* Add tooltips for the icons
+* Add Blinding Light
+* Add Axe Toss
+
 **v5.7**
 * Add Execution Sentence
 
