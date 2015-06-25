@@ -282,7 +282,10 @@ for classID = 1, MAX_CLASSES do
 end
 
 local function IsHostilePlayer(unit)
-	return unit and UnitIsPlayer(unit) and UnitReaction("player", unit) < 4 and not UnitIsPossessed(unit)
+	if not unit then return end
+	local reaction = UnitReaction("player", unit)
+	if not reaction then return end -- out of range
+	return UnitIsPlayer(unit) and reaction < 4 and not UnitIsPossessed(unit)
 end
 
 function OmniBar_ShowAnchor(self)
