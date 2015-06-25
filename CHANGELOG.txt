@@ -1,3 +1,8 @@
+**v5.9**
+* Only show tooltips when OmniBar is unlocked
+* Don't show tooltips when an icon is transparent
+* Minor bug fix
+
 **v5.8**
 * Update for 6.2
 * Add tooltips for the icons
