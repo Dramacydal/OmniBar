@@ -129,15 +129,15 @@
 			</Cooldown>
 		</Frames>
 		<Scripts>
-			<OnUpdate>
+			<OnEnter>
 				local bar = self:GetParent():GetParent()
-				if not bar.settings.noTooltips and self:IsMouseOver() then
-					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-					GameTooltip:SetSpellByID(self.spellID)
-					return
-				end
-				if GameTooltip:IsOwned(self) then GameTooltip:Hide() end
-			</OnUpdate>
+				if bar.settings.noTooltips then return end
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+				GameTooltip:SetSpellByID(self.spellID)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
 			<OnShow>
 				local bar = self:GetParent():GetParent()
 				table.insert(bar.active, self)
