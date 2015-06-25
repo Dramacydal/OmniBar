@@ -131,7 +131,7 @@
 		<Scripts>
 			<OnEnter>
 				local bar = self:GetParent():GetParent()
-				if bar.settings.noTooltips then return end
+				if bar.settings.noTooltips or self:GetAlpha() == 0 then return end
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				GameTooltip:SetSpellByID(self.spellID)
 			</OnEnter>
