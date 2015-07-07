@@ -1,3 +1,6 @@
+**v5.11**
+* Reset Spell Lock on Summon Felhunter
+
 **v5.10**
 * Add Combustion
 * Grimoire of Sacrifice now properly resets Spell Lock

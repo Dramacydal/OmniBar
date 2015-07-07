@@ -183,10 +183,10 @@ local order = {
 }
 
 local resets = {
-	--[[ Grimoire of Sacrifice
+	--[[ Summon Felhunter
 	     - Spell Lock
 	  ]]
-	[108503] = { 119910 },
+	[691] = { 119910 },
 
 	--[[ Cold Snap
 	     - Ice Block
