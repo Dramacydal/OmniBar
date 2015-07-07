@@ -1,3 +1,7 @@
+**v5.10**
+* Add Combustion
+* Grimoire of Sacrifice now properly resets Spell Lock
+
 **v5.9**
 * Only show tooltips when OmniBar is unlocked
 * Don't show tooltips when an icon is transparent
