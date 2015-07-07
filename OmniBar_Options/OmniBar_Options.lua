@@ -274,6 +274,9 @@ local function CreateSub(name)
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 					GameTooltip:SetSpellByID(self.spellID)
 				end)
+				spell:SetScript("OnLeave", function(self)
+					GameTooltip:Hide()
+				end)
 
 				spell.setFunc = function(value)
 					if not OmniBar.settings.cooldowns[spellID] then OmniBar.settings.cooldowns[spellID] = {} end
