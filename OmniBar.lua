@@ -130,6 +130,7 @@ local cooldowns = {
 	[66]     = { default = false, duration = 300, class = "MAGE" },                                          -- Invisibility
 	[1953]   = { default = false, duration = 15,  class = "MAGE" },                                          -- Blink
 	[2139]   = { default = true,  duration = 24,  class = "MAGE" },                                          -- Counterspell
+	[11129]  = { default = false, duration = 45,  class = "MAGE", specID = { 63 } },                         -- Combustion
 	[11958]  = { default = false, duration = 180, class = "MAGE" },                                          -- Cold Snap
 	[12043]  = { default = false, duration = 90,  class = "MAGE", specID = { 62 } },                         -- Presence of Mind
 	[12472]  = { default = false, duration = 180, class = "MAGE", specID = { 64 } },                         -- Icy Veins
